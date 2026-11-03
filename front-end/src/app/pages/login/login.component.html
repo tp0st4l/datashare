@@ -1,5 +1,9 @@
 <h1>Connexion</h1>
 
+@if (registered) {
+<p role="status">Votre compte a été créé, vous pouvez vous connecter.</p>
+}
+
 <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
     <div>
         <label for="email">Email</label>
@@ -23,6 +27,8 @@
     @if (errorMessage()) {
     <p role="alert">{{ errorMessage() }}</p>
     }
+
+    <a routerLink="/register">Créer un compte</a>
 
     <button type="submit" [disabled]="isLoading()">
         {{ isLoading() ? 'Connexion en cours...' : 'Se connecter' }}

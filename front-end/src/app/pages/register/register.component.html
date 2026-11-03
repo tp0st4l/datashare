@@ -1,0 +1,43 @@
+<h1>Créer un compte</h1>
+
+<form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+    <div>
+        <label for="email">Email</label>
+        <input id="email" type="email" formControlName="email" placeholder="Saisissez votre email..." />
+        @if (submitted() && form.controls.email.errors?.['required']) {
+        <p role="alert">L'email est obligatoire.</p>
+        }
+        @if (submitted() && form.controls.email.errors?.['email']) {
+        <p role="alert">Le format de l'email est invalide.</p>
+        }
+    </div>
+
+    <div>
+        <label for="password">Mot de passe</label>
+        <input id="password" type="password" formControlName="password" placeholder="Saisissez votre mot de passe..." />
+        @if (submitted() && form.controls.password.errors?.['required']) {
+        <p role="alert">Le mot de passe est obligatoire.</p>
+        }
+        @if (submitted() && form.controls.password.errors?.['minlength']) {
+        <p role="alert">Le mot de passe doit contenir au moins 8 caractères.</p>
+        }
+    </div>
+
+    <div>
+        <label for="confirmPassword">Vérification du mot de passe</label>
+        <input id="confirmPassword" type="password" formControlName="confirmPassword"
+            placeholder="Saisissez-le à nouveau" />
+        @if (submitted() && form.errors?.['passwordsMismatch']) {
+        <p role="alert">Les mots de passe ne correspondent pas.</p>
+        }
+    </div>
+
+    @if (errorMessage()) {
+    <p role="alert">{{ errorMessage() }}</p>
+    }
+
+    <a routerLink="/login">J'ai déjà un compte</a>
+    <button type="submit" [disabled]="isLoading()">
+        {{ isLoading() ? 'Création en cours...' : 'Créer mon compte' }}
+    </button>
+</form>
