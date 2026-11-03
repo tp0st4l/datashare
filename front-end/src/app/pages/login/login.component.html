@@ -1,0 +1,30 @@
+<h1>Connexion</h1>
+
+<form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+    <div>
+        <label for="email">Email</label>
+        <input id="email" type="email" formControlName="email" placeholder="Saisissez votre email..." />
+        @if (submitted() && form.controls.email.errors?.['required']) {
+        <p role="alert">L'email est obligatoire.</p>
+        }
+        @if (submitted() && form.controls.email.errors?.['email']) {
+        <p role="alert">Le format de l'email est invalide.</p>
+        }
+    </div>
+
+    <div>
+        <label for="password">Mot de passe</label>
+        <input id="password" type="password" formControlName="password" placeholder="Saisissez votre mot de passe..." />
+        @if (submitted() && form.controls.password.errors?.['required']) {
+        <p role="alert">Le mot de passe est obligatoire.</p>
+        }
+    </div>
+
+    @if (errorMessage()) {
+    <p role="alert">{{ errorMessage() }}</p>
+    }
+
+    <button type="submit" [disabled]="isLoading()">
+        {{ isLoading() ? 'Connexion en cours...' : 'Se connecter' }}
+    </button>
+</form>
