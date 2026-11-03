@@ -1,6 +1,8 @@
 package fr.datashare.handler;
 
 import fr.datashare.exception.EmailAlreadyUsedException;
+import fr.datashare.exception.InvalidFileException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -24,5 +26,11 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<ErrorDetails> handleBadCredentials(BadCredentialsException ex, WebRequest request) {
         ErrorDetails body = new ErrorDetails(LocalDateTime.now(), ex.getMessage(), request.getDescription(false));
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
+    }
+
+    @ExceptionHandler(InvalidFileException.class)
+    public ResponseEntity<ErrorDetails> handleInvalidFile(InvalidFileException ex, WebRequest request) {
+        ErrorDetails body = new ErrorDetails(LocalDateTime.now(), ex.getMessage(), request.getDescription(false));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 }
