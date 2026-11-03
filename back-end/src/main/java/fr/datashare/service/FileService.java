@@ -2,6 +2,8 @@ package fr.datashare.service;
 
 import fr.datashare.entities.StoredFile;
 import fr.datashare.entities.User;
+import fr.datashare.exception.FileAccessDeniedException;
+import fr.datashare.exception.FileExpiredException;
 import fr.datashare.exception.InvalidFileException;
 import fr.datashare.exception.ResourceNotFoundException;
 import fr.datashare.repository.StoredFileRepository;
@@ -65,6 +67,26 @@ public class FileService {
                 .orElseThrow(() -> new ResourceNotFoundException("Fichier introuvable"));
         storedFileRepository.delete(file);
         storageService.delete(file.getStorageName());
+    }
+
+    @Transactional(readOnly = true)
+    public StoredFile getDownloadable(String token) {
+        StoredFile file = storedFileRepository.findByToken(token)
+                .orElseThrow(() -> new ResourceNotFoundException("Lien invalide"));
+        if (file.isExpired()) {
+            throw new FileExpiredException();
+        }
+        return file;
+    }
+
+    @Transactional(readOnly = true)
+    public StoredFile checkDownloadAccess(String token, String password) {
+        StoredFile file = getDownloadable(token);
+        if (file.isPasswordProtected()
+                && (password == null || !passwordEncoder.matches(password, file.getPasswordHash()))) {
+            throw new FileAccessDeniedException();
+        }
+        return file;
     }
 
     private void validate(MultipartFile file, String password, Integer expirationDays) {

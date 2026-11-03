@@ -1,6 +1,8 @@
 package fr.datashare.handler;
 
 import fr.datashare.exception.EmailAlreadyUsedException;
+import fr.datashare.exception.FileAccessDeniedException;
+import fr.datashare.exception.FileExpiredException;
 import fr.datashare.exception.InvalidFileException;
 import fr.datashare.exception.ResourceNotFoundException;
 
@@ -39,5 +41,17 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<ErrorDetails> handleNotFound(ResourceNotFoundException ex, WebRequest request) {
         ErrorDetails body = new ErrorDetails(LocalDateTime.now(), ex.getMessage(), request.getDescription(false));
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
+    }
+
+    @ExceptionHandler(FileExpiredException.class)
+    public ResponseEntity<ErrorDetails> handleExpired(FileExpiredException ex, WebRequest request) {
+        ErrorDetails body = new ErrorDetails(LocalDateTime.now(), ex.getMessage(), request.getDescription(false));
+        return ResponseEntity.status(HttpStatus.GONE).body(body);
+    }
+
+    @ExceptionHandler(FileAccessDeniedException.class)
+    public ResponseEntity<ErrorDetails> handleFileAccessDenied(FileAccessDeniedException ex, WebRequest request) {
+        ErrorDetails body = new ErrorDetails(LocalDateTime.now(), ex.getMessage(), request.getDescription(false));
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(body);
     }
 }

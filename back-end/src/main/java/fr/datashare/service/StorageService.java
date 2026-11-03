@@ -1,6 +1,8 @@
 package fr.datashare.service;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -38,5 +40,9 @@ public class StorageService {
         } catch (IOException e) {
             throw new UncheckedIOException("Impossible de supprimer le fichier", e);
         }
+    }
+
+    public Resource load(String storageName) {
+        return new FileSystemResource(root.resolve(storageName));
     }
 }
