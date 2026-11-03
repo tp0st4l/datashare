@@ -3,6 +3,7 @@ package fr.datashare.handler;
 import fr.datashare.exception.EmailAlreadyUsedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
@@ -17,5 +18,11 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<ErrorDetails> handleEmailAlreadyUsed(EmailAlreadyUsedException ex, WebRequest request) {
         ErrorDetails body = new ErrorDetails(LocalDateTime.now(), ex.getMessage(), request.getDescription(false));
         return ResponseEntity.status(HttpStatus.CONFLICT).body(body);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ErrorDetails> handleBadCredentials(BadCredentialsException ex, WebRequest request) {
+        ErrorDetails body = new ErrorDetails(LocalDateTime.now(), ex.getMessage(), request.getDescription(false));
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
     }
 }
