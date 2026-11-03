@@ -2,12 +2,15 @@ package fr.datashare.controller;
 
 import fr.datashare.dto.LoginRequestDTO;
 import fr.datashare.dto.LoginResponseDTO;
+import fr.datashare.dto.MeResponseDTO;
 import fr.datashare.dto.RegisterRequestDTO;
+import fr.datashare.entities.User;
 import fr.datashare.mapper.UserDtoMapper;
 import fr.datashare.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -28,5 +31,10 @@ public class AuthController {
     public LoginResponseDTO login(@Valid @RequestBody LoginRequestDTO loginRequestDTO) {
         String token = userService.login(loginRequestDTO.getEmail(), loginRequestDTO.getPassword());
         return new LoginResponseDTO(token);
+    }
+
+    @GetMapping("/me")
+    public MeResponseDTO me(@AuthenticationPrincipal User user) {
+        return new MeResponseDTO(user.getEmail());
     }
 }
