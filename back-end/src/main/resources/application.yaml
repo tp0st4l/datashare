@@ -29,3 +29,5 @@ jwt:
 app:
   storage:
     location: ./uploads
+  cleanup:
+    cron: "0 0 3 * * *"   # tous les jours à 3 h du matin
