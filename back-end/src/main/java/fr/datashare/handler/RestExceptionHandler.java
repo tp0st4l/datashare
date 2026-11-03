@@ -2,6 +2,7 @@ package fr.datashare.handler;
 
 import fr.datashare.exception.EmailAlreadyUsedException;
 import fr.datashare.exception.InvalidFileException;
+import fr.datashare.exception.ResourceNotFoundException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,5 +33,11 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<ErrorDetails> handleInvalidFile(InvalidFileException ex, WebRequest request) {
         ErrorDetails body = new ErrorDetails(LocalDateTime.now(), ex.getMessage(), request.getDescription(false));
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ErrorDetails> handleNotFound(ResourceNotFoundException ex, WebRequest request) {
+        ErrorDetails body = new ErrorDetails(LocalDateTime.now(), ex.getMessage(), request.getDescription(false));
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
     }
 }

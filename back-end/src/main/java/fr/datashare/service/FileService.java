@@ -3,6 +3,7 @@ package fr.datashare.service;
 import fr.datashare.entities.StoredFile;
 import fr.datashare.entities.User;
 import fr.datashare.exception.InvalidFileException;
+import fr.datashare.exception.ResourceNotFoundException;
 import fr.datashare.repository.StoredFileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,14 +16,15 @@ import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.Locale;
 import java.util.Set;
+import java.util.List;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class FileService {
 
-    private static final Set<String> FORBIDDEN_EXTENSIONS =
-            Set.of("exe", "bat", "cmd", "com", "msi", "scr", "sh", "ps1", "vbs", "jar");
+    private static final Set<String> FORBIDDEN_EXTENSIONS = Set.of("exe", "bat", "cmd", "com", "msi", "scr", "sh",
+            "ps1", "vbs", "jar");
     private static final int DEFAULT_EXPIRATION_DAYS = 7;
     private static final int MIN_EXPIRATION_DAYS = 1;
     private static final int MAX_EXPIRATION_DAYS = 7;
@@ -48,6 +50,21 @@ public class FileService {
         storedFile.setStorageName(storageService.store(file));
 
         return storedFileRepository.save(storedFile);
+    }
+
+    @Transactional(readOnly = true)
+    public List<StoredFile> listFiles(User owner, boolean includeExpired) {
+        return storedFileRepository.findByOwnerOrderByCreatedAtDesc(owner).stream()
+                .filter(file -> includeExpired || !file.isExpired())
+                .toList();
+    }
+
+    public void delete(Long id, User owner) {
+        StoredFile file = storedFileRepository.findById(id)
+                .filter(f -> f.getOwner().getId().equals(owner.getId()))
+                .orElseThrow(() -> new ResourceNotFoundException("Fichier introuvable"));
+        storedFileRepository.delete(file);
+        storageService.delete(file.getStorageName());
     }
 
     private void validate(MultipartFile file, String password, Integer expirationDays) {
@@ -79,4 +96,5 @@ public class FileService {
         RANDOM.nextBytes(bytes);
         return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
     }
+
 }
