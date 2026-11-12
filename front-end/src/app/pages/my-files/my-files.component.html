@@ -1,0 +1,62 @@
+<p><a routerLink="/">Ajouter un fichier</a></p>
+
+<h1>Mes fichiers</h1>
+
+<label>
+    <input type="checkbox" [checked]="includeExpired()" (change)="toggleExpired($event)" />
+    Afficher les fichiers expirés
+</label>
+
+@if (errorMessage()) {
+<p role="alert">{{ errorMessage() }}</p>
+}
+
+@if (isLoading()) {
+<p>Chargement...</p>
+} @else if (files().length === 0) {
+<p>Aucun fichier pour le moment.</p>
+} @else {
+<table>
+    <caption>Liste de vos fichiers</caption>
+    <thead>
+        <tr>
+            <th scope="col">Nom</th>
+            <th scope="col">Taille</th>
+            <th scope="col">Envoyé le</th>
+            <th scope="col">Expire le</th>
+            <th scope="col">État</th>
+            <th scope="col">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @for (file of files(); track file.id) {
+        <tr>
+            <td>
+                {{ file.originalName }}
+                @if (file.passwordProtected) {
+                <span>(protégé)</span>
+                }
+            </td>
+            <td>{{ formatSize(file.size) }}</td>
+            <td>{{ file.createdAt | date: 'dd/MM/yyyy HH:mm' }}</td>
+            <td>{{ file.expiresAt | date: 'dd/MM/yyyy HH:mm' }}</td>
+            <td>{{ file.expired ? 'Expiré' : 'Valide' }}</td>
+            <td>
+                @if (pendingDeleteId() === file.id) {
+                <span>Supprimer définitivement ?</span>
+                <button type="button" (click)="confirmDelete(file.id)">Confirmer</button>
+                <button type="button" (click)="cancelDelete()">Annuler</button>
+                } @else {
+                @if (!file.expired) {
+                <a [href]="shareLink(file.token)">Lien</a>
+                }
+                <button type="button" (click)="askDelete(file.id)" [attr.aria-label]="'Supprimer ' + file.originalName">
+                    Supprimer
+                </button>
+                }
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>
+}

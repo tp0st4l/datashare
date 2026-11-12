@@ -1,0 +1,54 @@
+<p>
+    Connecté en tant que : {{ email() }}
+    <a routerLink="/my-files">Mes fichiers</a>
+    <button type="button" (click)="logout()">Déconnexion</button>
+</p>
+
+<h1>Ajouter un fichier</h1>
+
+<form [formGroup]="form" (ngSubmit)="onSubmit(fileInput)" novalidate>
+    <div>
+        <label for="file">Fichier</label>
+        <input #fileInput id="file" type="file" (change)="onFileSelected($event)" />
+        @if (selectedFile(); as file) {
+        <p>{{ file.name }} ({{ formatSize(file.size) }})</p>
+        }
+        @if (fileError()) {
+        <p role="alert">{{ fileError() }}</p>
+        }
+    </div>
+
+    <div>
+        <label for="password">Mot de passe</label>
+        <input id="password" type="password" formControlName="password" placeholder="Optionnel" />
+        @if (submitted() && form.controls.password.errors?.['minlength']) {
+        <p role="alert">Le mot de passe doit contenir au moins 6 caractères.</p>
+        }
+    </div>
+
+    <div>
+        <label for="expirationDays">Expiration</label>
+        <select id="expirationDays" formControlName="expirationDays">
+            @for (duration of durations; track duration.value) {
+            <option [ngValue]="duration.value">{{ duration.label }}</option>
+            }
+        </select>
+    </div>
+
+    @if (errorMessage()) {
+    <p role="alert">{{ errorMessage() }}</p>
+    }
+
+    <button type="submit" [disabled]="isLoading()">
+        {{ isLoading() ? 'Téléversement en cours...' : 'Téléverser' }}
+    </button>
+</form>
+
+@if (shareLink()) {
+<p role="status">Félicitations, ton fichier est en ligne ! Voici le lien à partager :</p>
+<input type="text" readonly [value]="shareLink()" aria-label="Lien de partage" />
+<button type="button" (click)="copyLink()">Copier le lien</button>
+@if (copied()) {
+<span role="status">Lien copié</span>
+}
+}

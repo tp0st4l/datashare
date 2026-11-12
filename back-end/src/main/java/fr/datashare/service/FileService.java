@@ -90,8 +90,8 @@ public class FileService {
     }
 
     private void validate(MultipartFile file, String password, Integer expirationDays) {
-        if (file == null || file.isEmpty()) {
-            throw new InvalidFileException("Le fichier est vide");
+        if (file == null) {
+            throw new InvalidFileException("Aucun fichier reçu");
         }
         String name = file.getOriginalFilename();
         if (name == null || name.isBlank()) {
@@ -100,6 +100,9 @@ public class FileService {
         String extension = name.contains(".") ? name.substring(name.lastIndexOf('.') + 1).toLowerCase(Locale.ROOT) : "";
         if (FORBIDDEN_EXTENSIONS.contains(extension)) {
             throw new InvalidFileException("Ce type de fichier n'est pas autorisé");
+        }
+        if (file.isEmpty()) {
+            throw new InvalidFileException("Le fichier est vide");
         }
         if (hasPassword(password) && password.length() < MIN_PASSWORD_LENGTH) {
             throw new InvalidFileException("Le mot de passe doit contenir au moins 6 caractères");
