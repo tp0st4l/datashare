@@ -17,3 +17,7 @@ export interface DownloadInfo {
     expiresAt: string;
     passwordProtected: boolean;
 }
+
+export interface DownloadTicket {
+    ticket: string;
+}

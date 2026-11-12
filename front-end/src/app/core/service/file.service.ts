@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { DownloadInfo, FileResponse } from '../models/file';
+import { DownloadInfo, DownloadTicket, FileResponse } from '../models/file';
 
 @Injectable({ providedIn: 'root' })
 export class FileService {
@@ -29,7 +29,11 @@ export class FileService {
         return this.http.get<DownloadInfo>(`/api/download/${token}`);
     }
 
-    download(token: string, password: string | null): Observable<Blob> {
-        return this.http.post(`/api/download/${token}`, { password }, { responseType: 'blob' });
+    requestTicket(token: string, password: string | null): Observable<DownloadTicket> {
+        return this.http.post<DownloadTicket>(`/api/download/${token}/ticket`, { password });
+    }
+
+    fileUrl(token: string, ticket: string): string {
+        return `/api/download/${token}/file?ticket=${encodeURIComponent(ticket)}`;
     }
 }

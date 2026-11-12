@@ -1,0 +1,38 @@
+<h1>Télécharger un fichier</h1>
+
+@if (isLoading()) {
+<p>Chargement...</p>
+} @else if (pageError()) {
+<p role="alert">{{ pageError() }}</p>
+} @else if (info(); as file) {
+<dl>
+    <dt>Nom</dt>
+    <dd>{{ file.originalName }}</dd>
+    <dt>Taille</dt>
+    <dd>{{ formatSize(file.size) }}</dd>
+    <dt>Type</dt>
+    <dd>{{ file.contentType || 'Inconnu' }}</dd>
+    <dt>Disponible jusqu'au</dt>
+    <dd>{{ file.expiresAt | date: 'dd/MM/yyyy HH:mm' }}</dd>
+</dl>
+
+<form [formGroup]="form" (ngSubmit)="onDownload()" novalidate>
+    @if (file.passwordProtected) {
+    <div>
+        <label for="password">Mot de passe</label>
+        <input id="password" type="password" formControlName="password" placeholder="Saisissez le mot de passe..." />
+        @if (submitted() && form.controls.password.errors?.['required']) {
+        <p role="alert">Ce fichier est protégé : le mot de passe est obligatoire.</p>
+        }
+    </div>
+    }
+
+    @if (downloadError()) {
+    <p role="alert">{{ downloadError() }}</p>
+    }
+
+    <button type="submit" [disabled]="isDownloading()">
+        {{ isDownloading() ? 'Téléchargement en cours...' : 'Télécharger' }}
+    </button>
+</form>
+}
