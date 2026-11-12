@@ -71,4 +71,13 @@ describe('AuthService', () => {
         localStorage.setItem('authToken', 'nimportequoi');
         expect(service.isLoggedIn()).toBe(false);
     });
+
+    it('loggedIn suit la connexion et la déconnexion', () => {
+        service.login({ email: 'test@datashare.fr', password: 'motdepasse' }).subscribe();
+        httpMock.expectOne('/api/auth/login').flush({ accessToken: 'abc' });
+        expect(service.loggedIn()).toBe(true);
+
+        service.logout();
+        expect(service.loggedIn()).toBe(false);
+    });
 });

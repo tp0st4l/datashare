@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { LoginRequest, LoginResponse, MeResponse, RegisterRequest } from '../models/auth';
 
@@ -8,6 +8,8 @@ const TOKEN_KEY = 'authToken';
 @Injectable({ providedIn: 'root' })
 export class AuthService {
     private readonly http = inject(HttpClient);
+    private readonly loggedInState = signal(this.isLoggedIn());
+    readonly loggedIn = this.loggedInState.asReadonly();
 
     register(request: RegisterRequest): Observable<void> {
         return this.http.post<void>('/api/auth/register', request);
@@ -16,7 +18,12 @@ export class AuthService {
     login(request: LoginRequest): Observable<LoginResponse> {
         return this.http
             .post<LoginResponse>('/api/auth/login', request)
-            .pipe(tap((response) => localStorage.setItem(TOKEN_KEY, response.accessToken)));
+            .pipe(
+                tap((response) => {
+                    localStorage.setItem(TOKEN_KEY, response.accessToken);
+                    this.loggedInState.set(true);
+                }),
+            );
     }
 
     me(): Observable<MeResponse> {
@@ -25,6 +32,7 @@ export class AuthService {
 
     logout(): void {
         localStorage.removeItem(TOKEN_KEY);
+        this.loggedInState.set(false);
     }
 
     getToken(): string | null {

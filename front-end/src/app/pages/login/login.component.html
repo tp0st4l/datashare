@@ -1,36 +1,40 @@
-<h1>Connexion</h1>
+<section class="card" aria-labelledby="login-title">
+    <h1 id="login-title" class="card-title">Connexion</h1>
 
-@if (registered) {
-<p role="status">Votre compte a été créé, vous pouvez vous connecter.</p>
-}
-
-<form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
-    <div>
-        <label for="email">Email</label>
-        <input id="email" type="email" formControlName="email" placeholder="Saisissez votre email..." />
-        @if (submitted() && form.controls.email.errors?.['required']) {
-        <p role="alert">L'email est obligatoire.</p>
-        }
-        @if (submitted() && form.controls.email.errors?.['email']) {
-        <p role="alert">Le format de l'email est invalide.</p>
-        }
-    </div>
-
-    <div>
-        <label for="password">Mot de passe</label>
-        <input id="password" type="password" formControlName="password" placeholder="Saisissez votre mot de passe..." />
-        @if (submitted() && form.controls.password.errors?.['required']) {
-        <p role="alert">Le mot de passe est obligatoire.</p>
-        }
-    </div>
-
-    @if (errorMessage()) {
-    <p role="alert">{{ errorMessage() }}</p>
+    @if (registered) {
+    <p class="alert alert-info" role="status">Votre compte a été créé, vous pouvez vous connecter.</p>
     }
 
-    <a routerLink="/register">Créer un compte</a>
+    <form class="form" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+        <div class="field">
+            <label for="email">Email</label>
+            <input class="input" id="email" type="email" formControlName="email" placeholder="Saisissez votre email..."
+                autocomplete="email" />
+            @if (submitted() && form.controls.email.errors?.['required']) {
+            <p class="error-text" role="alert">L'email est obligatoire.</p>
+            }
+            @if (submitted() && form.controls.email.errors?.['email']) {
+            <p class="error-text" role="alert">Le format de l'email est invalide.</p>
+            }
+        </div>
 
-    <button type="submit" [disabled]="isLoading()">
-        {{ isLoading() ? 'Connexion en cours...' : 'Se connecter' }}
-    </button>
-</form>
+        <div class="field">
+            <label for="password">Mot de passe</label>
+            <input class="input" id="password" type="password" formControlName="password"
+                placeholder="Saisissez votre mot de passe..." autocomplete="current-password" />
+            @if (submitted() && form.controls.password.errors?.['required']) {
+            <p class="error-text" role="alert">Le mot de passe est obligatoire.</p>
+            }
+        </div>
+
+        @if (errorMessage()) {
+        <p class="alert alert-error" role="alert">{{ errorMessage() }}</p>
+        }
+
+        <a class="link" routerLink="/register">Créer un compte</a>
+
+        <button class="btn btn-primary btn-block" type="submit" [disabled]="isLoading()">
+            {{ isLoading() ? 'Connexion en cours...' : 'Connexion' }}
+        </button>
+    </form>
+</section>

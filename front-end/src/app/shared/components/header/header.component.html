@@ -1,0 +1,8 @@
+<header class="site-header">
+    <a class="logo" routerLink="/">DataShare</a>
+    @if (loggedIn()) {
+    <a class="btn btn-dark" routerLink="/my-files">Mon espace</a>
+    } @else {
+    <a class="btn btn-dark" routerLink="/login">Se connecter</a>
+    }
+</header>

@@ -1,0 +1,80 @@
+/* DataShare — styles réellement utilisés dans les maquettes.
+Ces valeurs sont saisies en dur dans les écrans (et non via les variables Figma) :
+elles ont été relevées automatiquement sur les 26 écrans, par fréquence d'usage.
+À utiliser en priorité ; tokens.css contient les variables de la bibliothèque de base. */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300&family=Inter:wght@400;600&family=Josefin+Sans&display=swap');
+
+:root {
+    /* Fond de page : dégradé du haut (pêche) vers le bas (corail) */
+    --ds-gradient-page: linear-gradient(170deg, #ffb88c 0%, #de6262 100%);
+    --ds-gradient-accent: linear-gradient(90deg, #ff0f7b 0%, #f89b29 100%);
+
+    /* Surfaces */
+    --ds-surface: #ffffff;
+    /* cartes / panneaux */
+    --ds-surface-dark: #2c2c2c;
+    /* bouton « Se connecter » de l'en-tête */
+    --ds-surface-upload: #100218;
+    /* rond du bouton d'upload */
+    --ds-surface-upload-halo: #2f190d26;
+    --ds-surface-soft: #fff7f7;
+    --ds-surface-link: #f3f3f3;
+    /* champ du lien partagé (desktop) */
+
+    /* Boutons orange (style « tertiaire » DataShare) */
+    --ds-btn-bg: #ffeee3;
+    --ds-btn-bg-alt: #ff812d21;
+    --ds-btn-border: #ffa569;
+    --ds-btn-text: #ba681f;
+    --ds-link: #e27f29;
+    /* « Créer un compte », « Changer », lien partagé */
+    --ds-btn-disabled-bg: #b7a79c33;
+    --ds-btn-disabled-text: #aea49b;
+
+    /* Textes */
+    --ds-text: #000000;
+    --ds-text-default: #1e1e1e;
+    --ds-text-on-dark: #f3eeea;
+    --ds-text-placeholder: #b3b3b3;
+    --ds-text-error: #f14343;
+    /* « La taille des fichiers est limitée à 1 Go » */
+    --ds-text-error-strong: #c62020;
+    --ds-text-info: #2a3f72;
+    /* encart d'information (fond --ds-info-bg) */
+    --ds-info-bg: #e2ecff;
+    --ds-info-border: #b1c9f5;
+
+    /* Bordures */
+    --ds-border-input: #d9d9d9;
+    --ds-border-soft: #d7630b33;
+    --ds-border-orange: #cd5e1480;
+
+    /* Typographie */
+    --ds-font-main: "DM Sans", system-ui, sans-serif;
+    /* titres, boutons, interface */
+    --ds-font-input: "Inter", system-ui, sans-serif;
+    /* libellés et valeurs des champs */
+    --ds-font-logo: "DM Sans", system-ui, sans-serif;
+    /* logo « DataShare » : Bold 32 (28 en mobile) */
+    --ds-fs-logo: 32px;
+    --ds-fs-title: 28px;
+    /* « Connexion », « Ajouter un fichier » : Bold */
+    --ds-fs-hero: 30px;
+    /* « Tu veux partager un fichier ? » : Light */
+    --ds-fs-body: 16px;
+    --ds-fs-small: 14px;
+
+    /* Rayons et ombres */
+    --ds-radius-sm: 8px;
+    /* champs, boutons, lignes de fichiers */
+    --ds-radius-md: 12px;
+    /* cartes (Connexion, Ajouter un fichier…), menu mobile */
+    --ds-radius-lg: 24px;
+    /* filtres Tous / Actifs / Expiré */
+    --ds-radius-full: 240px;
+    /* rond du bouton d'upload */
+    --ds-shadow-card: 0 0 12px 0 #00000040;
+
+    /* Variantes accessibles (contraste ≥ 4.5:1, norme WCAG AA) */
+    --ds-link-a11y: #a8520f;
+}

@@ -1,0 +1,24 @@
+.public-layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.public-main {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 24px;
+}
+
+.site-footer {
+    padding: 16px;
+    color: var(--ds-text-on-dark);
+}
+
+@media (min-width: 768px) {
+    .site-footer {
+        padding: 16px 96px;
+    }
+}
