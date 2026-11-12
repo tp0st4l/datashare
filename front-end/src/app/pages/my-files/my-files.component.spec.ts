@@ -1,12 +1,11 @@
 import { TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { vi } from 'vitest';
 import { FileResponse } from '../../core/models/file';
 import { FileService } from '../../core/service/file.service';
 import { MyFilesComponent } from './my-files.component';
 
-const makeFile = (id: number, name: string): FileResponse => ({
+const makeFile = (id: number, name: string, expired = false): FileResponse => ({
     id,
     token: `token-${id}`,
     originalName: name,
@@ -15,7 +14,7 @@ const makeFile = (id: number, name: string): FileResponse => ({
     createdAt: '2026-11-12T10:00:00',
     expiresAt: '2026-11-19T10:00:00',
     passwordProtected: false,
-    expired: false,
+    expired,
 });
 
 describe('MyFilesComponent', () => {
@@ -30,21 +29,36 @@ describe('MyFilesComponent', () => {
         fileServiceMock.listMine.mockReturnValue(of([makeFile(1, 'a.txt'), makeFile(2, 'b.txt')]));
         TestBed.configureTestingModule({
             imports: [MyFilesComponent],
-            providers: [provideRouter([]), { provide: FileService, useValue: fileServiceMock }],
+            providers: [{ provide: FileService, useValue: fileServiceMock }],
         });
         component = create();
     });
 
-    it('charge mes fichiers sans les expirés', () => {
+    it('charge les fichiers actifs par défaut', () => {
+        expect(component.filter()).toBe('active');
         expect(fileServiceMock.listMine).toHaveBeenCalledWith(false);
-        expect(component.files().length).toBe(2);
-        expect(component.isLoading()).toBe(false);
+        expect(component.displayedFiles().length).toBe(2);
     });
 
-    it('recharge avec les expirés quand on coche la case', () => {
-        component.toggleExpired({ target: { checked: true } } as unknown as Event);
+    it('recharge avec les expirés pour le filtre « Tous »', () => {
+        component.setFilter('all');
 
         expect(fileServiceMock.listMine).toHaveBeenLastCalledWith(true);
+    });
+
+    it("n'affiche que les expirés pour le filtre « Expiré »", () => {
+        fileServiceMock.listMine.mockReturnValue(of([makeFile(1, 'a.txt'), makeFile(3, 'vieux.txt', true)]));
+
+        component.setFilter('expired');
+
+        expect(fileServiceMock.listMine).toHaveBeenLastCalledWith(true);
+        expect(component.displayedFiles().map((file) => file.id)).toEqual([3]);
+    });
+
+    it('ne recharge pas si le filtre est déjà sélectionné', () => {
+        component.setFilter('active');
+
+        expect(fileServiceMock.listMine).toHaveBeenCalledTimes(1);
     });
 
     it('affiche une erreur si le chargement échoue', () => {

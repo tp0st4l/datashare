@@ -1,24 +1,38 @@
 import { DatePipe } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { FileResponse } from '../../core/models/file';
 import { FileService } from '../../core/service/file.service';
+import { expirationLabel } from '../../shared/utils/expiration-label';
 import { formatSize } from '../../shared/utils/format-size';
+
+type FileFilter = 'all' | 'active' | 'expired';
 
 @Component({
     selector: 'app-my-files',
     imports: [DatePipe],
     templateUrl: './my-files.component.html',
+    styleUrl: './my-files.component.css',
 })
 export class MyFilesComponent {
     private readonly fileService = inject(FileService);
 
+    readonly filterOptions: { value: FileFilter; label: string }[] = [
+        { value: 'all', label: 'Tous' },
+        { value: 'active', label: 'Actifs' },
+        { value: 'expired', label: 'Expiré' },
+    ];
+
     readonly files = signal<FileResponse[]>([]);
-    readonly includeExpired = signal(false);
+    readonly filter = signal<FileFilter>('active');
+    readonly displayedFiles = computed(() =>
+        this.filter() === 'expired' ? this.files().filter((file) => file.expired) : this.files(),
+    );
     readonly isLoading = signal(true);
     readonly errorMessage = signal<string | null>(null);
     readonly pendingDeleteId = signal<number | null>(null);
 
     readonly formatSize = formatSize;
+    readonly expirationLabel = expirationLabel;
 
     constructor() {
         this.loadFiles();
@@ -27,7 +41,7 @@ export class MyFilesComponent {
     loadFiles(): void {
         this.isLoading.set(true);
         this.errorMessage.set(null);
-        this.fileService.listMine(this.includeExpired()).subscribe({
+        this.fileService.listMine(this.filter() !== 'active').subscribe({
             next: (files) => {
                 this.files.set(files);
                 this.isLoading.set(false);
@@ -39,8 +53,11 @@ export class MyFilesComponent {
         });
     }
 
-    toggleExpired(event: Event): void {
-        this.includeExpired.set((event.target as HTMLInputElement).checked);
+    setFilter(filter: FileFilter): void {
+        if (filter === this.filter()) {
+            return;
+        }
+        this.filter.set(filter);
         this.loadFiles();
     }
 

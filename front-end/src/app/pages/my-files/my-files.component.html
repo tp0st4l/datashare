@@ -1,60 +1,63 @@
-<h1>Mes fichiers</h1>
+<h1 class="page-title">Mes fichiers</h1>
 
-<label>
-    <input type="checkbox" [checked]="includeExpired()" (change)="toggleExpired($event)" />
-    Afficher les fichiers expirés
-</label>
+<div class="filters" role="group" aria-label="Filtrer les fichiers">
+    @for (option of filterOptions; track option.value) {
+    <button class="filter" type="button" [class.filter-active]="filter() === option.value"
+        [attr.aria-pressed]="filter() === option.value" (click)="setFilter(option.value)">
+        {{ option.label }}
+    </button>
+    }
+</div>
 
 @if (errorMessage()) {
-<p role="alert">{{ errorMessage() }}</p>
+<p class="alert alert-error" role="alert">{{ errorMessage() }}</p>
 }
 
 @if (isLoading()) {
 <p>Chargement...</p>
-} @else if (files().length === 0) {
-<p>Aucun fichier pour le moment.</p>
+} @else if (displayedFiles().length === 0) {
+<p>Aucun fichier à afficher.</p>
 } @else {
-<table>
-    <caption>Liste de vos fichiers</caption>
-    <thead>
-        <tr>
-            <th scope="col">Nom</th>
-            <th scope="col">Taille</th>
-            <th scope="col">Envoyé le</th>
-            <th scope="col">Expire le</th>
-            <th scope="col">État</th>
-            <th scope="col">Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @for (file of files(); track file.id) {
-        <tr>
-            <td>
-                {{ file.originalName }}
-                @if (file.passwordProtected) {
-                <span>(protégé)</span>
-                }
-            </td>
-            <td>{{ formatSize(file.size) }}</td>
-            <td>{{ file.createdAt | date: 'dd/MM/yyyy HH:mm' }}</td>
-            <td>{{ file.expiresAt | date: 'dd/MM/yyyy HH:mm' }}</td>
-            <td>{{ file.expired ? 'Expiré' : 'Valide' }}</td>
-            <td>
-                @if (pendingDeleteId() === file.id) {
-                <span>Supprimer définitivement ?</span>
-                <button type="button" (click)="confirmDelete(file.id)">Confirmer</button>
-                <button type="button" (click)="cancelDelete()">Annuler</button>
-                } @else {
-                @if (!file.expired) {
-                <a [href]="shareLink(file.token)">Lien</a>
-                }
-                <button type="button" (click)="askDelete(file.id)" [attr.aria-label]="'Supprimer ' + file.originalName">
-                    Supprimer
-                </button>
-                }
-            </td>
-        </tr>
+<ul class="file-list">
+    @for (file of displayedFiles(); track file.id) {
+    <li class="file-item">
+        <div class="file-info">
+            <span class="file-name">{{ file.originalName }}</span>
+            <span class="file-status" [class.file-status-expired]="file.expired">
+                {{ expirationLabel(file.expiresAt) }}{{ file.expired ? ' le ' : ', le ' }}{{ file.expiresAt | date:
+                'dd/MM/yyyy' }}
+            </span>
+            <span class="file-meta">Envoyé le {{ file.createdAt | date: 'dd/MM/yyyy' }} · {{ formatSize(file.size)
+                }}</span>
+        </div>
+
+        @if (file.passwordProtected) {
+        <span class="icon icon-lock" role="img" aria-label="Protégé par mot de passe"></span>
         }
-    </tbody>
-</table>
+
+        @if (pendingDeleteId() === file.id) {
+        <div class="file-actions">
+            <span class="confirm-text">Supprimer définitivement ?</span>
+            <button class="btn btn-outline" type="button" (click)="confirmDelete(file.id)">Confirmer</button>
+            <button class="btn btn-outline" type="button" (click)="cancelDelete()">Annuler</button>
+        </div>
+        } @else if (file.expired) {
+        <span class="expired-note">Ce fichier a expiré, il n'est plus stocké chez nous</span>
+        } @else {
+        <div class="file-actions">
+            <button class="btn btn-outline" type="button" (click)="askDelete(file.id)"
+                [attr.aria-label]="'Supprimer ' + file.originalName">
+                <span class="icon icon-trash" aria-hidden="true"></span>
+                <span class="btn-label">Supprimer</span>
+            </button>
+            <a class="btn btn-outline" [href]="shareLink(file.token)"
+                [attr.aria-label]="'Accéder à ' + file.originalName">
+                <span class="btn-label">Accéder</span>
+                <span class="icon icon-arrow-right" aria-hidden="true"></span>
+            </a>
+        </div>
+        }
+    </li>
+    }
+</ul>
 }
