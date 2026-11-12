@@ -12,7 +12,7 @@ export const routes: Routes = [
         path: '',
         component: PublicLayoutComponent,
         children: [
-            { path: '', component: UploadComponent, canActivate: [authGuard] },
+            { path: '', component: UploadComponent },
             { path: 'login', component: LoginComponent },
             { path: 'register', component: RegisterComponent },
             { path: 'download/:token', component: DownloadComponent },

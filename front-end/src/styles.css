@@ -127,10 +127,22 @@ select.input {
     width: 100%;
 }
 
+.btn-outline {
+    padding: 6px 12px;
+    color: var(--ds-link-a11y);
+    background: var(--ds-surface);
+    border: 1px solid var(--ds-btn-border);
+}
+
 .link {
+    padding: 0;
+    font: inherit;
     color: var(--ds-link-a11y);
     text-align: center;
     text-decoration: none;
+    background: none;
+    border: none;
+    cursor: pointer;
 }
 
 .link:hover {
@@ -174,4 +186,65 @@ select.input {
     display: flex;
     justify-content: center;
     width: 100%;
+}
+
+/* ---------- Icônes ---------- */
+
+/* L'icône prend la couleur du texte (currentColor) */
+.icon {
+    display: inline-block;
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    background-color: currentColor;
+    -webkit-mask: var(--icon) center / contain no-repeat;
+    mask: var(--icon) center / contain no-repeat;
+}
+
+.icon-upload {
+    --icon: url('/icons/upload-cloud.svg');
+}
+
+.icon-copy {
+    --icon: url('/icons/copy.svg');
+}
+
+.icon-trash {
+    --icon: url('/icons/trash-2.svg');
+}
+
+.icon-arrow-right {
+    --icon: url('/icons/arrow-right.svg');
+}
+
+.icon-lock {
+    --icon: url('/icons/lock.svg');
+}
+
+.icon-log-out {
+    --icon: url('/icons/log-out.svg');
+}
+
+.icon-menu {
+    --icon: url('/icons/menu.svg');
+}
+
+.icon-close {
+    --icon: url('/icons/x.svg');
+}
+
+.icon-more {
+    --icon: url('/icons/more-vertical.svg');
+}
+
+/* ---------- Utilitaires ---------- */
+
+/* Masqué à l'écran, mais lu par les lecteurs d'écran */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
 }

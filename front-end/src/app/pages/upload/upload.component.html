@@ -1,54 +1,86 @@
-<p>
-    Connecté en tant que : {{ email() }}
-    <a routerLink="/my-files">Mes fichiers</a>
-    <button type="button" (click)="logout()">Déconnexion</button>
-</p>
+<input #fileInput id="file" type="file" class="visually-hidden" tabindex="-1" aria-hidden="true"
+    (change)="onFileSelected($event)" />
 
-<h1>Ajouter un fichier</h1>
+@if (uploaded(); as file) {
+<section class="card upload-card" aria-labelledby="upload-title">
+    <h1 id="upload-title" class="card-title">Ajouter un fichier</h1>
 
-<form [formGroup]="form" (ngSubmit)="onSubmit(fileInput)" novalidate>
-    <div>
-        <label for="file">Fichier</label>
-        <input #fileInput id="file" type="file" (change)="onFileSelected($event)" />
-        @if (selectedFile(); as file) {
-        <p>{{ file.name }} ({{ formatSize(file.size) }})</p>
-        }
-        @if (fileError()) {
-        <p role="alert">{{ fileError() }}</p>
-        }
+    <div class="file-row">
+        <div class="file-info">
+            <span class="file-name">{{ file.name }}</span>
+            <span class="file-size">{{ formatSize(file.size) }}</span>
+        </div>
     </div>
 
-    <div>
-        <label for="password">Mot de passe</label>
-        <input id="password" type="password" formControlName="password" placeholder="Optionnel" />
-        @if (submitted() && form.controls.password.errors?.['minlength']) {
-        <p role="alert">Le mot de passe doit contenir au moins 6 caractères.</p>
-        }
-    </div>
+    <p class="success-text" role="status">
+        Félicitations, ton fichier sera conservé chez nous pendant {{ file.duration }} !
+    </p>
+    <a class="share-link" [href]="shareLink()">{{ shareLink() }}</a>
 
-    <div>
-        <label for="expirationDays">Expiration</label>
-        <select id="expirationDays" formControlName="expirationDays">
-            @for (duration of durations; track duration.value) {
-            <option [ngValue]="duration.value">{{ duration.label }}</option>
-            }
-        </select>
+    <div class="actions">
+        <button class="btn btn-primary" type="button" (click)="copyLink()">
+            <span class="icon icon-copy" aria-hidden="true"></span>
+            Copier le lien
+        </button>
     </div>
-
-    @if (errorMessage()) {
-    <p role="alert">{{ errorMessage() }}</p>
+    @if (copied()) {
+    <p class="copied" role="status">Lien copié</p>
     }
 
-    <button type="submit" [disabled]="isLoading()">
-        {{ isLoading() ? 'Téléversement en cours...' : 'Téléverser' }}
-    </button>
-</form>
+    <button class="link" type="button" (click)="startOver(fileInput)">Partager un autre fichier</button>
+</section>
+} @else if (selectedFile(); as file) {
+<section class="card upload-card" aria-labelledby="upload-title">
+    <h1 id="upload-title" class="card-title">Ajouter un fichier</h1>
 
-@if (shareLink()) {
-<p role="status">Félicitations, ton fichier est en ligne ! Voici le lien à partager :</p>
-<input type="text" readonly [value]="shareLink()" aria-label="Lien de partage" />
-<button type="button" (click)="copyLink()">Copier le lien</button>
-@if (copied()) {
-<span role="status">Lien copié</span>
-}
+    <div class="file-row">
+        <div class="file-info">
+            <span class="file-name">{{ file.name }}</span>
+            <span class="file-size" [class.file-size-error]="tooLarge()">{{ formatSize(file.size) }}</span>
+        </div>
+        <button class="btn btn-outline" type="button" (click)="fileInput.click()">Changer</button>
+    </div>
+    @if (fileError()) {
+    <p class="error-text" role="alert">{{ fileError() }}</p>
+    }
+
+    <form class="form" [formGroup]="form" (ngSubmit)="onSubmit(fileInput)" novalidate>
+        <div class="field">
+            <label for="password">Mot de passe</label>
+            <input class="input" id="password" type="password" formControlName="password" placeholder="Optionnel"
+                autocomplete="new-password" />
+            @if (submitted() && form.controls.password.errors?.['minlength']) {
+            <p class="error-text" role="alert">Le mot de passe doit contenir au moins 6 caractères.</p>
+            }
+        </div>
+
+        <div class="field">
+            <label for="expirationDays">Expiration</label>
+            <select class="input" id="expirationDays" formControlName="expirationDays">
+                @for (duration of durations; track duration.value) {
+                <option [ngValue]="duration.value">{{ duration.label }}</option>
+                }
+            </select>
+        </div>
+
+        @if (errorMessage()) {
+        <p class="alert alert-error" role="alert">{{ errorMessage() }}</p>
+        }
+
+        <div class="actions">
+            <button class="btn btn-primary" type="submit" [disabled]="isLoading() || !!fileError()">
+                <span class="icon icon-upload" aria-hidden="true"></span>
+                {{ isLoading() ? 'Téléversement en cours...' : 'Téléverser' }}
+            </button>
+        </div>
+    </form>
+</section>
+} @else {
+<section class="hero">
+    <h1 class="hero-title">Tu veux partager un fichier ?</h1>
+    <button class="upload-button" type="button" (click)="pickFile(fileInput)"
+        aria-label="Choisir un fichier à partager">
+        <span class="icon icon-upload" aria-hidden="true"></span>
+    </button>
+</section>
 }

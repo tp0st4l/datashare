@@ -1,0 +1,100 @@
+.hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+}
+
+.hero-title {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 300;
+    text-align: center;
+}
+
+.upload-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 96px;
+    height: 96px;
+    color: #ffffff;
+    background: var(--ds-surface-upload);
+    border: none;
+    border-radius: 50%;
+    box-shadow: 0 0 0 24px var(--ds-surface-upload-halo);
+    cursor: pointer;
+}
+
+.upload-button .icon {
+    width: 48px;
+    height: 48px;
+}
+
+.upload-button:focus-visible {
+    outline: 3px solid var(--ds-surface-upload);
+    outline-offset: 30px;
+}
+
+.upload-card {
+    max-width: 480px;
+}
+
+.file-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.file-info {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.file-name {
+    overflow: hidden;
+    font-family: var(--ds-font-input);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.file-size {
+    font-size: var(--ds-fs-small);
+}
+
+.file-size-error {
+    color: var(--ds-text-error-strong);
+}
+
+.success-text {
+    margin: 0;
+    font-family: var(--ds-font-input);
+    line-height: 1.5;
+}
+
+.share-link {
+    padding: 10px 16px;
+    color: var(--ds-link-a11y);
+    word-break: break-all;
+    background: var(--ds-surface-link);
+    border-radius: var(--ds-radius-sm);
+}
+
+.actions {
+    display: flex;
+    justify-content: center;
+}
+
+.copied {
+    margin: 0;
+    font-size: var(--ds-fs-small);
+    text-align: center;
+}
+
+@media (min-width: 768px) {
+    .hero-title {
+        font-size: var(--ds-fs-hero);
+    }
+}

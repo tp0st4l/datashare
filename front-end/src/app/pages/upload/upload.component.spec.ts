@@ -1,4 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
+import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
@@ -8,7 +9,7 @@ import { FileService } from '../../core/service/file.service';
 import { UploadComponent } from './upload.component';
 
 describe('UploadComponent', () => {
-    const authServiceMock = { me: vi.fn(), logout: vi.fn() };
+    const loggedIn = signal(true);
     const fileServiceMock = { upload: vi.fn() };
     let component: UploadComponent;
     let router: Router;
@@ -17,14 +18,13 @@ describe('UploadComponent', () => {
     const textFile = () => new File(['hello'], 'test.txt');
 
     beforeEach(() => {
-        authServiceMock.me.mockReturnValue(of({ email: 'test@datashare.fr' }));
-        authServiceMock.logout.mockReset();
+        loggedIn.set(true);
         fileServiceMock.upload.mockReset();
         TestBed.configureTestingModule({
             imports: [UploadComponent],
             providers: [
                 provideRouter([]),
-                { provide: AuthService, useValue: authServiceMock },
+                { provide: AuthService, useValue: { loggedIn } },
                 { provide: FileService, useValue: fileServiceMock },
             ],
         });
@@ -33,8 +33,24 @@ describe('UploadComponent', () => {
         vi.spyOn(router, 'navigate').mockResolvedValue(true);
     });
 
-    it("affiche l'email de l'utilisateur connecté", () => {
-        expect(component.email()).toBe('test@datashare.fr');
+    it('envoie un visiteur vers la connexion au lieu d’ouvrir le sélecteur', () => {
+        loggedIn.set(false);
+        const input = document.createElement('input');
+        const clickSpy = vi.spyOn(input, 'click');
+
+        component.pickFile(input);
+
+        expect(router.navigate).toHaveBeenCalledWith(['/login']);
+        expect(clickSpy).not.toHaveBeenCalled();
+    });
+
+    it('ouvre le sélecteur de fichier pour un utilisateur connecté', () => {
+        const input = document.createElement('input');
+        const clickSpy = vi.spyOn(input, 'click').mockImplementation(() => { });
+
+        component.pickFile(input);
+
+        expect(clickSpy).toHaveBeenCalled();
     });
 
     it('refuse un envoi sans fichier', () => {
@@ -55,6 +71,16 @@ describe('UploadComponent', () => {
         expect(fileServiceMock.upload).not.toHaveBeenCalled();
     });
 
+    it('refuse une extension interdite avant tout envoi', () => {
+        selectFile(new File(['echo'], 'script.SH'));
+
+        component.onSubmit(document.createElement('input'));
+
+        expect(component.fileError()).toBe("Ce type de fichier n'est pas autorisé");
+        expect(component.tooLarge()).toBe(false);
+        expect(fileServiceMock.upload).not.toHaveBeenCalled();
+    });
+
     it('refuse un mot de passe trop court', () => {
         selectFile(textFile());
         component.form.setValue({ password: 'abc', expirationDays: 7 });
@@ -64,7 +90,7 @@ describe('UploadComponent', () => {
         expect(fileServiceMock.upload).not.toHaveBeenCalled();
     });
 
-    it('téléverse, affiche le lien et réinitialise le formulaire', () => {
+    it('téléverse, affiche le succès et réinitialise le formulaire', () => {
         fileServiceMock.upload.mockReturnValue(of({ token: 'abc' }));
         selectFile(textFile());
         component.form.setValue({ password: 'secret12', expirationDays: 3 });
@@ -72,6 +98,7 @@ describe('UploadComponent', () => {
         component.onSubmit(document.createElement('input'));
 
         expect(fileServiceMock.upload).toHaveBeenCalledWith(expect.any(File), 'secret12', 3);
+        expect(component.uploaded()).toEqual({ name: 'test.txt', size: 5, duration: '3 jours' });
         expect(component.shareLink()).toBe(`${window.location.origin}/download/abc`);
         expect(component.form.getRawValue()).toEqual({ password: '', expirationDays: 7 });
         expect(component.selectedFile()).toBeNull();
@@ -84,6 +111,7 @@ describe('UploadComponent', () => {
         component.onSubmit(document.createElement('input'));
 
         expect(fileServiceMock.upload).toHaveBeenCalledWith(expect.any(File), null, 7);
+        expect(component.uploaded()?.duration).toBe('une semaine');
     });
 
     it('affiche le message renvoyé par le back-end', () => {
@@ -117,10 +145,13 @@ describe('UploadComponent', () => {
         await vi.waitFor(() => expect(component.copied()).toBe(true));
     });
 
-    it('se déconnecte et revient à /login', () => {
-        component.logout();
+    it("revient à l'accueil avec « Partager un autre fichier »", () => {
+        component.uploaded.set({ name: 'test.txt', size: 5, duration: 'une semaine' });
+        component.shareLink.set('http://localhost:4200/download/abc');
 
-        expect(authServiceMock.logout).toHaveBeenCalled();
-        expect(router.navigate).toHaveBeenCalledWith(['/login']);
+        component.startOver(document.createElement('input'));
+
+        expect(component.uploaded()).toBeNull();
+        expect(component.shareLink()).toBeNull();
     });
 });
