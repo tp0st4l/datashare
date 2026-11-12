@@ -61,4 +61,13 @@ describe('RegisterComponent', () => {
 
         expect(component.errorMessage()).toBe('Une erreur est survenue, réessayez plus tard.');
     });
+
+    it('refuse un email sans extension de domaine', () => {
+        component.form.setValue({ email: 'marie@edr', password: 'motdepasse', confirmPassword: 'motdepasse' });
+
+        component.onSubmit();
+
+        expect(component.form.controls.email.errors?.['pattern']).toBeTruthy();
+        expect(authServiceMock.register).not.toHaveBeenCalled();
+    });
 });

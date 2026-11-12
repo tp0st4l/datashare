@@ -1,38 +1,52 @@
-<h1>Télécharger un fichier</h1>
+<section class="card" aria-labelledby="download-title">
+    <h1 id="download-title" class="card-title">Télécharger un fichier</h1>
 
-@if (isLoading()) {
-<p>Chargement...</p>
-} @else if (pageError()) {
-<p role="alert">{{ pageError() }}</p>
-} @else if (info(); as file) {
-<dl>
-    <dt>Nom</dt>
-    <dd>{{ file.originalName }}</dd>
-    <dt>Taille</dt>
-    <dd>{{ formatSize(file.size) }}</dd>
-    <dt>Type</dt>
-    <dd>{{ file.contentType || 'Inconnu' }}</dd>
-    <dt>Disponible jusqu'au</dt>
-    <dd>{{ file.expiresAt | date: 'dd/MM/yyyy HH:mm' }}</dd>
-</dl>
-
-<form [formGroup]="form" (ngSubmit)="onDownload()" novalidate>
-    @if (file.passwordProtected) {
-    <div>
-        <label for="password">Mot de passe</label>
-        <input id="password" type="password" formControlName="password" placeholder="Saisissez le mot de passe..." />
-        @if (submitted() && form.controls.password.errors?.['required']) {
-        <p role="alert">Ce fichier est protégé : le mot de passe est obligatoire.</p>
-        }
+    @if (isLoading()) {
+    <p>Chargement...</p>
+    } @else if (pageError()) {
+    <p class="alert alert-error" role="alert">
+        <span class="icon icon-error" aria-hidden="true"></span>
+        {{ pageError() }}
+    </p>
+    } @else if (info(); as file) {
+    <div class="file-row">
+        <div class="file-info">
+            <span class="file-name">{{ file.originalName }}</span>
+            <span class="file-size">{{ formatSize(file.size) }} · {{ file.contentType || 'Type inconnu' }}</span>
+        </div>
     </div>
+
+    @if (expiryNotice(); as notice) {
+    <p class="alert" [class.alert-warning]="notice.urgent" [class.alert-info]="!notice.urgent">
+        <span class="icon" [class.icon-warning]="notice.urgent" [class.icon-info]="!notice.urgent"
+            aria-hidden="true"></span>
+        {{ notice.text }}, le {{ file.expiresAt | date: 'dd/MM/yyyy à HH:mm' }}.
+    </p>
     }
 
-    @if (downloadError()) {
-    <p role="alert">{{ downloadError() }}</p>
-    }
+    <form class="form" [formGroup]="form" (ngSubmit)="onDownload()" novalidate>
+        @if (file.passwordProtected) {
+        <div class="field">
+            <label for="password">Mot de passe</label>
+            <input class="input" id="password" type="password" formControlName="password"
+                placeholder="Saisissez le mot de passe..." autocomplete="off" />
+            @if (submitted() && form.controls.password.errors?.['required']) {
+            <p class="error-text" role="alert">Ce fichier est protégé : le mot de passe est obligatoire.</p>
+            }
+        </div>
+        }
 
-    <button type="submit" [disabled]="isDownloading()">
-        {{ isDownloading() ? 'Téléchargement en cours...' : 'Télécharger' }}
-    </button>
-</form>
-}
+        @if (downloadError()) {
+        <p class="alert alert-error" role="alert">
+            <span class="icon icon-error" aria-hidden="true"></span>
+            {{ downloadError() }}
+        </p>
+        }
+
+        <button class="btn btn-primary btn-block" type="submit" [disabled]="isDownloading()">
+            <span class="icon icon-download" aria-hidden="true"></span>
+            {{ isDownloading() ? 'Téléchargement en cours...' : 'Télécharger' }}
+        </button>
+    </form>
+    }
+</section>

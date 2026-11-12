@@ -40,34 +40,6 @@
     max-width: 480px;
 }
 
-.file-row {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-}
-
-.file-info {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    min-width: 0;
-}
-
-.file-name {
-    overflow: hidden;
-    font-family: var(--ds-font-input);
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.file-size {
-    font-size: var(--ds-fs-small);
-}
-
-.file-size-error {
-    color: var(--ds-text-error-strong);
-}
-
 .success-text {
     margin: 0;
     font-family: var(--ds-font-input);

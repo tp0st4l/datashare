@@ -4,12 +4,15 @@ function startOfDay(date: Date): number {
     return new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime();
 }
 
+export function daysUntilExpiration(expiresAt: string, now: Date = new Date()): number {
+    return Math.round((startOfDay(new Date(expiresAt)) - startOfDay(now)) / DAY_MS);
+}
+
 export function expirationLabel(expiresAt: string, now: Date = new Date()): string {
-    const expiry = new Date(expiresAt);
-    if (expiry <= now) {
+    if (new Date(expiresAt) <= now) {
         return 'Expiré';
     }
-    const days = Math.round((startOfDay(expiry) - startOfDay(now)) / DAY_MS);
+    const days = daysUntilExpiration(expiresAt, now);
     if (days === 0) {
         return "Expire aujourd'hui";
     }

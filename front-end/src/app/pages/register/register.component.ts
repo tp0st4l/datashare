@@ -4,6 +4,8 @@ import { AbstractControl, NonNullableFormBuilder, ReactiveFormsModule, Validatio
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/service/auth.service';
 
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 function passwordsMatch(group: AbstractControl): ValidationErrors | null {
     const password = group.get('password')?.value;
     const confirmPassword = group.get('confirmPassword')?.value;
@@ -22,7 +24,7 @@ export class RegisterComponent {
 
     readonly form = this.fb.group(
         {
-            email: ['', [Validators.required, Validators.email]],
+            email: ['', [Validators.required, Validators.email, Validators.pattern(EMAIL_PATTERN)]],
             password: ['', [Validators.required, Validators.minLength(8)]],
             confirmPassword: ['', Validators.required],
         },

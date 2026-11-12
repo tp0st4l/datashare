@@ -48,7 +48,7 @@ describe('DownloadComponent', () => {
     it('signale un lien expiré (410)', () => {
         fileServiceMock.getDownloadInfo.mockReturnValue(throwError(() => new HttpErrorResponse({ status: 410 })));
 
-        expect(create().pageError()).toBe("Ce fichier n'est plus disponible : le lien a expiré.");
+        expect(create().pageError()).toBe("Ce fichier n'est plus disponible en téléchargement car il a expiré.");
     });
 
     it('signale un lien invalide (404)', () => {
@@ -89,7 +89,7 @@ describe('DownloadComponent', () => {
 
     it.each([
         [403, 'Mot de passe incorrect.'],
-        [410, "Ce fichier n'est plus disponible : le lien a expiré."],
+        [410, "Ce fichier n'est plus disponible en téléchargement car il a expiré."],
         [404, 'Ce lien de téléchargement est invalide.'],
         [500, 'Le téléchargement a échoué, réessayez plus tard.'],
     ])('affiche le bon message pour une erreur %i', (status, message) => {
@@ -101,5 +101,13 @@ describe('DownloadComponent', () => {
 
         expect(component.downloadError()).toBe(message);
         expect(component.startDownload).not.toHaveBeenCalled();
+    });
+
+    it("signale en urgence une expiration le lendemain", () => {
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        fileServiceMock.getDownloadInfo.mockReturnValue(of({ ...protectedInfo, expiresAt: tomorrow.toISOString() }));
+
+        expect(create().expiryNotice()).toEqual({ text: 'Ce fichier expirera demain', urgent: true });
     });
 });
