@@ -1,6 +1,7 @@
 package fr.datashare.service;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,6 +22,12 @@ public class JwtService {
     @Value("${jwt.expiration-ms}")
     private long expirationMs;
 
+    private static final String TYPE_CLAIM = "type";
+    private static final String DOWNLOAD_TYPE = "download";
+
+    @Value("${jwt.download-ticket-expiration-ms}")
+    private long downloadTicketExpirationMs;
+
     public String generateToken(UserDetails userDetails) {
         return Jwts.builder()
                 .subject(userDetails.getUsername())
@@ -36,6 +43,26 @@ public class JwtService {
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
         return extractUsername(token).equals(userDetails.getUsername()) && !isTokenExpired(token);
+    }
+
+    public String generateDownloadTicket(String fileToken) {
+        return Jwts.builder()
+                .subject(fileToken)
+                .claim(TYPE_CLAIM, DOWNLOAD_TYPE)
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + downloadTicketExpirationMs))
+                .signWith(getSigningKey())
+                .compact();
+    }
+
+    public boolean isDownloadTicketValid(String ticket, String fileToken) {
+        try {
+            Claims claims = extractClaim(ticket, c -> c);
+            return DOWNLOAD_TYPE.equals(claims.get(TYPE_CLAIM, String.class))
+                    && fileToken.equals(claims.getSubject());
+        } catch (JwtException | IllegalArgumentException e) {
+            return false;
+        }
     }
 
     private boolean isTokenExpired(String token) {

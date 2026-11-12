@@ -84,6 +84,15 @@ class FileControllerTest {
         storedFileRepository.saveAll(files);
     }
 
+    private org.springframework.test.web.servlet.ResultActions requestTicket(String fileToken, String password)
+            throws Exception {
+        var request = post("/api/download/" + fileToken + "/ticket");
+        if (password != null) {
+            request.contentType(MediaType.APPLICATION_JSON).content("{\"password\":\"" + password + "\"}");
+        }
+        return mockMvc.perform(request);
+    }
+
     // ---------- Upload ----------
 
     @Test
@@ -181,31 +190,45 @@ class FileControllerTest {
     }
 
     @Test
-    void download_returns403WithoutPassword() throws Exception {
-        String fileToken = upload(FILE_PASSWORD);
-
-        mockMvc.perform(post("/api/download/" + fileToken))
-                .andExpect(status().isForbidden());
+    void ticket_returns403WithoutPassword() throws Exception {
+        requestTicket(upload(FILE_PASSWORD), null).andExpect(status().isForbidden());
     }
 
     @Test
-    void download_returns403WithWrongPassword() throws Exception {
-        String fileToken = upload(FILE_PASSWORD);
-
-        mockMvc.perform(post("/api/download/" + fileToken).contentType(MediaType.APPLICATION_JSON)
-                .content("{\"password\":\"mauvais\"}"))
-                .andExpect(status().isForbidden());
+    void ticket_returns403WithWrongPassword() throws Exception {
+        requestTicket(upload(FILE_PASSWORD), "mauvais").andExpect(status().isForbidden());
     }
 
     @Test
-    void download_returnsFileWithCorrectPassword() throws Exception {
+    void download_returnsFileWithValidTicket() throws Exception {
         String fileToken = upload(FILE_PASSWORD);
+        String response = requestTicket(fileToken, FILE_PASSWORD).andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+        String ticket = JsonPath.read(response, "$.ticket");
 
-        mockMvc.perform(post("/api/download/" + fileToken).contentType(MediaType.APPLICATION_JSON)
-                .content("{\"password\":\"" + FILE_PASSWORD + "\"}"))
+        mockMvc.perform(get("/api/download/" + fileToken + "/file").param("ticket", ticket))
                 .andExpect(status().isOk())
                 .andExpect(header().string("Content-Disposition", containsString("attachment")))
                 .andExpect(content().string("Bonjour DataShare"));
+    }
+
+    @Test
+    void download_returns403WithInvalidTicket() throws Exception {
+        String fileToken = upload(null);
+
+        mockMvc.perform(get("/api/download/" + fileToken + "/file").param("ticket", "abc.def.ghi"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void download_returns403WithTicketOfAnotherFile() throws Exception {
+        String firstToken = upload(null);
+        String secondToken = upload(null);
+        String response = requestTicket(firstToken, null).andReturn().getResponse().getContentAsString();
+        String ticket = JsonPath.read(response, "$.ticket");
+
+        mockMvc.perform(get("/api/download/" + secondToken + "/file").param("ticket", ticket))
+                .andExpect(status().isForbidden());
     }
 
     @Test
