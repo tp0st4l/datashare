@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
 public class RegisterRequestDTO {
     @NotBlank
-    @Email
+    @Email(regexp = "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$")
     private String email;
 
     @NotBlank

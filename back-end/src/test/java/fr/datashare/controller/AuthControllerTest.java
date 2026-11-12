@@ -91,6 +91,11 @@ class AuthControllerTest {
         register(EMAIL, "court").andExpect(status().isBadRequest());
     }
 
+    @Test
+    void register_returns400WhenEmailHasNoDomainExtension() throws Exception {
+        register("marie@edr", PASSWORD).andExpect(status().isBadRequest());
+    }
+
     // ---------- Connexion ----------
 
     @Test
