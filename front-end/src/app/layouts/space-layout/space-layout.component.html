@@ -1,0 +1,50 @@
+<div class="space-layout">
+    <aside id="space-menu" class="sidebar" [class.sidebar-open]="menuOpen()">
+        <div class="sidebar-top">
+            <button class="icon-button close-button" type="button" (click)="closeMenu()" aria-label="Fermer le menu">
+                <span class="icon icon-close" aria-hidden="true"></span>
+            </button>
+            <a class="logo" routerLink="/">DataShare</a>
+        </div>
+
+        <nav class="sidebar-nav" aria-label="Mon espace">
+            <a class="nav-link" routerLink="/my-files" routerLinkActive="nav-link-active" ariaCurrentWhenActive="page"
+                (click)="closeMenu()">Mes fichiers</a>
+        </nav>
+
+        <div class="sidebar-actions">
+            <a class="btn btn-dark" routerLink="/">Ajouter des fichiers</a>
+            <button class="btn logout-button" type="button" (click)="logout()">
+                <span class="icon icon-log-out" aria-hidden="true"></span>
+                Déconnexion
+            </button>
+        </div>
+
+        <p class="sidebar-footer">Copyright DataShare© 2025</p>
+    </aside>
+
+    @if (menuOpen()) {
+    <div class="backdrop" (click)="closeMenu()"></div>
+    }
+
+    <div class="space-main">
+        <header class="topbar">
+            <button class="icon-button menu-button" type="button" (click)="openMenu()" aria-label="Ouvrir le menu"
+                aria-controls="space-menu" [attr.aria-expanded]="menuOpen()">
+                <span class="icon icon-menu" aria-hidden="true"></span>
+            </button>
+            <span class="user-email">{{ email() }}</span>
+            <div class="topbar-actions">
+                <a class="btn btn-dark" routerLink="/">Ajouter des fichiers</a>
+                <button class="btn logout-button" type="button" (click)="logout()">
+                    <span class="icon icon-log-out" aria-hidden="true"></span>
+                    Déconnexion
+                </button>
+            </div>
+        </header>
+
+        <main class="space-content">
+            <router-outlet />
+        </main>
+    </div>
+</div>

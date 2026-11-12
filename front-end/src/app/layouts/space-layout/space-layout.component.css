@@ -1,0 +1,158 @@
+.space-layout {
+    display: flex;
+    min-height: 100vh;
+    background: var(--ds-surface-soft);
+}
+
+/* ---------- Barre latérale (mobile : tiroir caché) ---------- */
+
+.sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    width: 260px;
+    padding: 24px;
+    background: var(--ds-gradient-page);
+    transform: translateX(-100%);
+    transition: transform 0.2s ease;
+}
+
+.sidebar-open {
+    transform: translateX(0);
+}
+
+.backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    background: rgb(0 0 0 / 0.4);
+}
+
+.sidebar-top {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.logo {
+    font-family: var(--ds-font-logo);
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--ds-text-on-dark);
+    text-decoration: none;
+}
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.nav-link {
+    padding: 10px 16px;
+    font-weight: 500;
+    color: var(--ds-text);
+    text-decoration: none;
+    border-radius: var(--ds-radius-sm);
+}
+
+.nav-link-active {
+    color: var(--ds-link-a11y);
+    background: rgb(255 255 255 / 0.55);
+}
+
+.sidebar-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.sidebar-footer {
+    margin: auto 0 0;
+    color: var(--ds-text-on-dark);
+}
+
+/* ---------- Partie principale ---------- */
+
+.space-main {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.topbar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 24px;
+    background: var(--ds-btn-bg);
+    border-bottom: 1px solid var(--ds-border-soft);
+}
+
+.user-email {
+    margin-left: auto;
+    overflow: hidden;
+    font-weight: 500;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.topbar-actions {
+    display: none;
+}
+
+.space-content {
+    flex: 1;
+    padding: 24px;
+}
+
+/* ---------- Boutons ---------- */
+
+.icon-button {
+    display: inline-flex;
+    padding: 8px;
+    color: var(--ds-text);
+    background: none;
+    border: none;
+    border-radius: var(--ds-radius-sm);
+    cursor: pointer;
+}
+
+.icon-button .icon {
+    width: 24px;
+    height: 24px;
+}
+
+.logout-button {
+    color: var(--ds-link-a11y);
+    background: none;
+    border: none;
+}
+
+/* ---------- Desktop ---------- */
+
+@media (min-width: 768px) {
+    .sidebar {
+        position: static;
+        transform: none;
+        transition: none;
+    }
+
+    .close-button,
+    .menu-button,
+    .backdrop,
+    .sidebar-actions,
+    .user-email {
+        display: none;
+    }
+
+    .topbar-actions {
+        display: flex;
+        gap: 16px;
+        margin-left: auto;
+    }
+}

@@ -1,13 +1,12 @@
 import { DatePipe } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
 import { FileResponse } from '../../core/models/file';
 import { FileService } from '../../core/service/file.service';
 import { formatSize } from '../../shared/utils/format-size';
 
 @Component({
     selector: 'app-my-files',
-    imports: [DatePipe, RouterLink],
+    imports: [DatePipe],
     templateUrl: './my-files.component.html',
 })
 export class MyFilesComponent {
