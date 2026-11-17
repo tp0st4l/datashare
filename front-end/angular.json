@@ -42,6 +42,14 @@
                   "maximumError": "8kB"
                 }
               ],
+              "optimization": {
+                "scripts": true,
+                "styles": {
+                  "minify": true,
+                  "inlineCritical": false
+                },
+                "fonts": true
+              },
               "outputHashing": "all"
             },
             "development": {
@@ -74,7 +82,9 @@
               "html",
               "text-summary"
             ],
-            "coverageInclude": ["src/app/**/*.ts"],
+            "coverageInclude": [
+              "src/app/**/*.ts"
+            ],
             "coverageExclude": [
               "src/app/core/models/**",
               "src/app/**/*.spec.ts"
