@@ -13,3 +13,5 @@ node_modules/
 dist/
 coverage/
 back-end/uploads/
+
+docs/audits/cli/*.report.*

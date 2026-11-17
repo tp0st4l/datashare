@@ -1,0 +1,11 @@
+page-appareil | perf | access. | bonnes pr. | FCP | LCP | TBT | CLS
+download-desktop | 100 | 100 | 100 | 0.6 s | 0.6 s | 0 ms | 0.013
+download-mobile | 95 | 100 | 100 | 2.2 s | 2.5 s | 20 ms | 0.03
+login-desktop | 100 | 100 | 100 | 0.5 s | 0.5 s | 0 ms | 0.006
+login-mobile | 96 | 100 | 100 | 2.2 s | 2.4 s | 50 ms | 0.006
+my-files-desktop | 100 | 100 | 100 | 0.5 s | 0.6 s | 0 ms | 0
+my-files-mobile | 94 | 100 | 100 | 2.3 s | 2.7 s | 0 ms | 0
+register-desktop | 100 | 100 | 100 | 0.6 s | 0.6 s | 0 ms | 0.011
+register-mobile | 96 | 100 | 100 | 2.2 s | 2.3 s | 50 ms | 0.002
+upload-desktop | 100 | 100 | 100 | 0.5 s | 0.6 s | 0 ms | 0.014
+upload-mobile | 94 | 100 | 100 | 2.2 s | 2.7 s | 30 ms | 0
