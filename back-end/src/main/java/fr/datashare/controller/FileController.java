@@ -3,6 +3,7 @@ package fr.datashare.controller;
 import fr.datashare.dto.FileResponseDTO;
 import fr.datashare.entities.User;
 import fr.datashare.service.FileService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
+@SecurityRequirement(name = "bearerAuth")
 @RequestMapping("/api/files")
 @RequiredArgsConstructor
 public class FileController {

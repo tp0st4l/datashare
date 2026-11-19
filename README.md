@@ -36,12 +36,13 @@ Le script vérifie les prérequis, génère le fichier `.env` avec des secrets a
 
 La configuration sensible est dans le fichier `.env` à la racine, généré par le script d'installation. Il ne doit jamais être commité.
 
-| Variable                              | Rôle                                                                                          |
-| ------------------------------------- | --------------------------------------------------------------------------------------------- |
-| `DB_ADMIN_USER` / `DB_ADMIN_PASSWORD` | Administrateur PostgreSQL, réservé à l'administration                                         |
-| `DB_USER` / `DB_PASSWORD`             | Compte utilisé par l'application, sans droit d'administration (différent de l'administrateur) |
-| `DB_NAME`                             | Nom de la base de données                                                                     |
-| `JWT_SECRET`                          | Clé de signature des tokens de connexion                                                      |
+| Variable                              | Rôle                                                                                                                         |
+| ------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `DB_ADMIN_USER` / `DB_ADMIN_PASSWORD` | Administrateur PostgreSQL, réservé à l'administration                                                                        |
+| `DB_USER` / `DB_PASSWORD`             | Compte utilisé par l'application, sans droit d'administration (différent de l'administrateur)                                |
+| `DB_NAME`                             | Nom de la base de données                                                                                                    |
+| `JWT_SECRET`                          | Clé de signature des tokens de connexion                                                                                     |
+| `API_DOCS_ENABLED`                    | `true` pour activer la documentation de l'API (Swagger UI sur http://localhost:8080/swagger-ui.html) ; désactivée si absente |
 
 Les valeurs ne doivent contenir ni `$`, ni guillemets, ni antislash. Pour générer un secret : `openssl rand -hex 32`.
 

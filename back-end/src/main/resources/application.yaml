@@ -20,7 +20,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: health       # pas '*', contrairement à EduBibliotheque
+        include: health
 
 jwt:
   secret: ${JWT_SECRET}
@@ -32,3 +32,9 @@ app:
     location: ./uploads
   cleanup:
     cron: "0 0 3 * * *"   # tous les jours à 3 h du matin
+
+springdoc:
+  api-docs:
+    enabled: ${API_DOCS_ENABLED:false}
+  swagger-ui:
+    enabled: ${API_DOCS_ENABLED:false}

@@ -7,6 +7,7 @@ import fr.datashare.dto.RegisterRequestDTO;
 import fr.datashare.entities.User;
 import fr.datashare.mapper.UserDtoMapper;
 import fr.datashare.service.UserService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -33,6 +34,7 @@ public class AuthController {
         return new LoginResponseDTO(token);
     }
 
+    @SecurityRequirement(name = "bearerAuth")
     @GetMapping("/me")
     public MeResponseDTO me(@AuthenticationPrincipal User user) {
         return new MeResponseDTO(user.getEmail());
