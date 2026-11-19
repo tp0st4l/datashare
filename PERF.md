@@ -121,18 +121,18 @@ Synthèse calculée à partir de ces logs ([`perf/metriques-logs.txt`](perf/metr
 
 ## 4. Environnement de mesure
 
-| Élément   | Valeur                                                                                           |
-| --------- | ------------------------------------------------------------------------------------------------ |
-| Machine   | VM Debian 13, 4 Go de RAM                                                                        |
-| Back-end  | Spring Boot 4.1, Java 25, PostgreSQL 18 (Docker)                                                 |
-| Front-end | build de production servi par nginx 1.30 (Docker), compression gzip                              |
-| Outils    | k6 (image Docker `grafana/k6`), Lighthouse 13.5 + Chromium (image Docker `datashare-lighthouse`) |
+| Élément   | Valeur                                                                                                       |
+| --------- | ------------------------------------------------------------------------------------------------------------ |
+| Machine   | VM Debian 13, 4 Go de RAM                                                                                    |
+| Back-end  | Spring Boot 4.1, Java 25, PostgreSQL 18 (Docker)                                                             |
+| Front-end | build de production servi par nginx 1.30 (Docker), compression gzip                                          |
+| Outils    | k6 2.4.0 (image Docker `grafana/k6:2.4.0`), Lighthouse 13.5 + Chromium (image Docker `datashare-lighthouse`) |
 
 Relancer les mesures, depuis la racine du dépôt, avec le back-end lancé :
 
 ```bash
 # Test de charge
-docker run --rm --network host -v "$PWD/perf:/perf" grafana/k6:latest run -q /perf/download.k6.js \
+docker run --rm --network host -v "$PWD/perf:/perf" grafana/k6:2.4.0 run -q /perf/download.k6.js \
   | tee perf/resultat-download.txt
 
 # Audits Lighthouse (le build de production doit être servi par nginx sur le port 8081, voir README)
