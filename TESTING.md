@@ -8,13 +8,13 @@ Derniers résultats : **19/11/2026**, tous les tests au vert.
 
 ## 1. Stratégie
 
-| Niveau                       | Outil                                                                     | Ce qui est testé                                                                                 | Nombre |
-| ---------------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ | ------ |
-| Unitaire (back)              | JUnit 5, Mockito                                                          | Services isolés de la base : comptes, JWT, purge, gestion des erreurs                            | 15     |
-| Intégration (back)           | MockMvc, Testcontainers (PostgreSQL 18 Alpine réel), Spring Security réel | Chaque route de l'API par HTTP : codes de retour, format des erreurs, contrôle d'accès, JWT réel | 42     |
-| Unitaire (front)             | Vitest                                                                    | Services, guard, intercepteur, pages, layouts, fonctions utilitaires ; le back est simulé        | 83     |
-| End-to-end                   | Cypress                                                                   | Parcours utilisateur dans un navigateur, avec le back-end et la base réels                       | 7      |
-| Performance et accessibilité | k6, Lighthouse                                                            | Voir [PERF.md](PERF.md)                                                                          | —      |
+| Niveau                       | Outil                                                                     | Ce qui est testé                                                                                   | Nombre |
+| ---------------------------- | ------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | ------ |
+| Unitaire (back)              | JUnit 5, Mockito                                                          | Services isolés de la base : comptes, JWT, purge, gestion des erreurs, journalisation des requêtes | 18     |
+| Intégration (back)           | MockMvc, Testcontainers (PostgreSQL 18 Alpine réel), Spring Security réel | Chaque route de l'API par HTTP : codes de retour, format des erreurs, contrôle d'accès, JWT réel   | 42     |
+| Unitaire (front)             | Vitest                                                                    | Services, guard, intercepteur, pages, layouts, fonctions utilitaires ; le back est simulé          | 83     |
+| End-to-end                   | Cypress                                                                   | Parcours utilisateur dans un navigateur, avec le back-end et la base réels                         | 7      |
+| Performance et accessibilité | k6, Lighthouse                                                            | Voir [PERF.md](PERF.md)                                                                            | —      |
 
 Choix principaux :
 
