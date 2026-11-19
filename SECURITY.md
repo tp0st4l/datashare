@@ -45,11 +45,11 @@ Dernier scan : **19/11/2026**.
 ### Validation des données
 
 - Toutes les entrées sont validées **côté client et côté serveur** : format de l'email (avec extension de domaine), longueur des mots de passe, durée d'expiration, fichier.
-- Les mots de passe sont limités à **72 octets UTF-8**, la limite de BCrypt. Au-delà, Spring Security refuse de les hasher (correctif de la CVE-2025-22228). Avant cette limite, un mot de passe trop long provoquait une erreur 500. Il donne désormais un 400 à l'inscription et à l'upload, et il est refusé avant toute vérification BCrypt à la connexion (401) et au ticket (403).
+- Les mots de passe sont limités à **72 octets UTF-8**, la limite de BCrypt : au-delà, Spring Security refuse de les hasher (correctif de la CVE-2025-22228). Un mot de passe plus long est refusé avec un 400 à l'inscription et à l'upload, et avant toute vérification BCrypt à la connexion (401) et au ticket (403).
 
 ### Erreurs
 
-- Toutes les erreurs suivent un **format unique** (`ErrorDetails` : date, message, route, et détail par champ pour les 400).
+- Toutes les erreurs suivent le même format (`ErrorDetails` : date, message, route, et détail par champ pour les 400).
 - Une erreur inattendue renvoie un **500 avec un message générique** ; le détail (exception, trace) n'est écrit que dans les logs du serveur.
 - Les réponses portent les en-têtes de sécurité de Spring Security : `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Cache-Control: no-store`.
 
