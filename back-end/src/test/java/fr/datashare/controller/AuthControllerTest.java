@@ -102,14 +102,15 @@ class AuthControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("Données invalides"))
                 .andExpect(jsonPath("$.fieldErrors.email").value("Le format de l'email est invalide"))
-                .andExpect(jsonPath("$.fieldErrors.password").value("Le mot de passe doit contenir au moins 8 caractères"));
+                .andExpect(jsonPath("$.fieldErrors.password")
+                        .value("Le mot de passe doit contenir au moins 8 caractères"));
     }
 
     @Test
     void register_returns400InErrorDetailsFormatForMalformedJson() throws Exception {
         mockMvc.perform(post("/api/auth/register")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{pas du json"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{pas du json"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("Requête invalide : paramètre manquant ou mal formé"))
                 .andExpect(jsonPath("$.details").value("uri=/api/auth/register"))
@@ -167,6 +168,13 @@ class AuthControllerTest {
     void openApiSpec_isPublicAndDescribesTheApi() throws Exception {
         mockMvc.perform(get("/v3/api-docs"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.info.title").value("DataShare API"));
+                .andExpect(jsonPath("$.info.title").value("DataShare API"))
+                .andExpect(jsonPath("$.paths['/api/files'].post.responses['413']").exists())
+                .andExpect(jsonPath("$.paths['/api/download/{token}/file'].get.responses['403']").exists());
+    }
+
+    @Test
+    void openApiYaml_isPublic() throws Exception {
+        mockMvc.perform(get("/v3/api-docs.yaml")).andExpect(status().isOk());
     }
 }

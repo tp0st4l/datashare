@@ -1,0 +1,456 @@
+openapi: 3.1.0
+info:
+  title: DataShare API
+  description: "API de partage de fichiers : comptes, téléversement, téléchargement\
+    \ par lien"
+  version: "1.0"
+servers:
+- url: http://localhost:8080
+  description: Generated server url
+tags:
+- name: Fichiers
+  description: Gestion des fichiers de l'utilisateur connecté
+- name: Téléchargement
+  description: "Accès public à un fichier partagé, à partir du token de son lien"
+- name: Authentification
+  description: Création de compte et connexion
+paths:
+  /api/files:
+    get:
+      tags:
+      - Fichiers
+      summary: Lister ses fichiers
+      description: Du plus récent au plus ancien.
+      operationId: myFiles
+      parameters:
+      - name: includeExpired
+        in: query
+        description: Inclure les fichiers expirés
+        required: false
+        schema:
+          type: boolean
+          default: false
+      responses:
+        "200":
+          description: Liste des fichiers de l'utilisateur
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/FileResponseDTO"
+        "401":
+          description: "Token absent, invalide ou expiré"
+      security:
+      - bearerAuth: []
+    post:
+      tags:
+      - Fichiers
+      summary: Téléverser un fichier
+      description: "1 Go maximum, extensions exécutables refusées. Renvoie le token\
+        \ du lien de partage."
+      operationId: upload
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/UploadRequestDTO"
+      responses:
+        "201":
+          description: Fichier enregistré
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FileResponseDTO"
+        "400":
+          description: "Fichier refusé : vide, extension interdite, mot de passe ou\
+            \ durée invalides"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorDetails"
+        "413":
+          description: "Fichier trop volumineux : 1 Go maximum"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorDetails"
+        "401":
+          description: "Token absent, invalide ou expiré"
+      security:
+      - bearerAuth: []
+  /api/download/{token}/ticket:
+    post:
+      tags:
+      - Téléchargement
+      summary: Obtenir un ticket de téléchargement
+      description: "Vérifie le mot de passe si le fichier est protégé ; sinon, le\
+        \ corps peut être omis. Le ticket est valable 60 secondes, pour ce fichier\
+        \ uniquement."
+      operationId: ticket
+      parameters:
+      - name: token
+        in: path
+        description: Token du lien de partage
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DownloadRequestDTO"
+      responses:
+        "200":
+          description: Ticket délivré
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DownloadTicketDTO"
+        "403":
+          description: Mot de passe absent ou incorrect
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorDetails"
+        "404":
+          description: Lien inconnu
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorDetails"
+        "410":
+          description: Fichier expiré
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorDetails"
+  /api/auth/register:
+    post:
+      tags:
+      - Authentification
+      summary: Créer un compte
+      description: "Email unique au format valide, mot de passe de 8 caractères minimum\
+        \ (hashé avec BCrypt)."
+      operationId: register
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterRequestDTO"
+        required: true
+      responses:
+        "201":
+          description: Compte créé
+        "400":
+          description: "Données invalides : le détail par champ est dans fieldErrors"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorDetails"
+        "409":
+          description: Un compte existe déjà avec cet email
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorDetails"
+  /api/auth/login:
+    post:
+      tags:
+      - Authentification
+      summary: Se connecter
+      description: "Renvoie un JWT valable 1 heure, à envoyer dans l'en-tête Authorization,\
+        \ précédé de « Bearer »."
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequestDTO"
+        required: true
+      responses:
+        "200":
+          description: Connexion réussie
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponseDTO"
+        "400":
+          description: "Données invalides : le détail par champ est dans fieldErrors"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorDetails"
+        "401":
+          description: Email ou mot de passe incorrect
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorDetails"
+  /api/download/{token}:
+    get:
+      tags:
+      - Téléchargement
+      summary: Informations d'un fichier partagé
+      description: "Nom, type, taille, date d'expiration et protection par mot de\
+        \ passe, sans télécharger le fichier."
+      operationId: info
+      parameters:
+      - name: token
+        in: path
+        description: Token du lien de partage
+        required: true
+        schema:
+          type: string
+      responses:
+        "404":
+          description: Lien inconnu
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorDetails"
+        "410":
+          description: Fichier expiré
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorDetails"
+        "200":
+          description: Informations du fichier
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DownloadInfoDTO"
+  /api/download/{token}/file:
+    get:
+      tags:
+      - Téléchargement
+      summary: Télécharger le fichier
+      description: "Envoie le fichier en flux, en pièce jointe (Content-Disposition:\
+        \ attachment)."
+      operationId: file
+      parameters:
+      - name: token
+        in: path
+        description: Token du lien de partage
+        required: true
+        schema:
+          type: string
+      - name: ticket
+        in: query
+        description: "Ticket obtenu par POST /api/download/{token}/ticket"
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Contenu du fichier
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        "400":
+          description: Ticket manquant
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorDetails"
+        "403":
+          description: "Ticket invalide, expiré ou délivré pour un autre fichier"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorDetails"
+        "404":
+          description: Lien inconnu
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorDetails"
+        "410":
+          description: Fichier expiré
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorDetails"
+  /api/auth/me:
+    get:
+      tags:
+      - Authentification
+      summary: Utilisateur connecté
+      description: Renvoie l'email du titulaire du token.
+      operationId: me
+      responses:
+        "200":
+          description: Utilisateur connecté
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MeResponseDTO"
+        "401":
+          description: "Token absent, invalide ou expiré"
+      security:
+      - bearerAuth: []
+  /api/files/{id}:
+    delete:
+      tags:
+      - Fichiers
+      summary: Supprimer un fichier
+      description: Supprime le fichier sur le disque et ses métadonnées.
+      operationId: delete
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "204":
+          description: Fichier supprimé
+        "404":
+          description: Fichier inconnu ou appartenant à un autre utilisateur
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorDetails"
+        "401":
+          description: "Token absent, invalide ou expiré"
+      security:
+      - bearerAuth: []
+components:
+  schemas:
+    UploadRequestDTO:
+      type: object
+      properties:
+        file:
+          type: string
+          format: binary
+          description: Fichier à partager
+        password:
+          type: string
+          description: "Mot de passe facultatif, 6 caractères minimum"
+        expirationDays:
+          type: integer
+          format: int32
+          description: "Durée de conservation en jours, de 1 à 7 (7 par défaut)"
+          maximum: 7
+          minimum: 1
+      required:
+      - file
+    ErrorDetails:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+          description: Date et heure de l'erreur
+        message:
+          type: string
+          description: "Message lisible, affichable à l'utilisateur"
+          example: Mot de passe incorrect
+        details:
+          type: string
+          description: Route concernée
+          example: uri=/api/download/abc/ticket
+        fieldErrors:
+          type: object
+          additionalProperties:
+            type: string
+          description: "Présent uniquement pour les erreurs de validation (400) :\
+            \ message par champ invalide"
+          example:
+            email: Le format de l'email est invalide
+    FileResponseDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        token:
+          type: string
+        originalName:
+          type: string
+        contentType:
+          type: string
+        size:
+          type: integer
+          format: int64
+        createdAt:
+          type: string
+          format: date-time
+        expiresAt:
+          type: string
+          format: date-time
+        passwordProtected:
+          type: boolean
+        expired:
+          type: boolean
+    DownloadRequestDTO:
+      type: object
+      properties:
+        password:
+          type: string
+    DownloadTicketDTO:
+      type: object
+      properties:
+        ticket:
+          type: string
+    RegisterRequestDTO:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          minLength: 1
+        password:
+          type: string
+          maxLength: 2147483647
+          minLength: 8
+      required:
+      - email
+      - password
+    LoginRequestDTO:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          minLength: 1
+        password:
+          type: string
+          minLength: 1
+      required:
+      - email
+      - password
+    LoginResponseDTO:
+      type: object
+      properties:
+        accessToken:
+          type: string
+    DownloadInfoDTO:
+      type: object
+      properties:
+        originalName:
+          type: string
+        contentType:
+          type: string
+        size:
+          type: integer
+          format: int64
+        expiresAt:
+          type: string
+          format: date-time
+        passwordProtected:
+          type: boolean
+    MeResponseDTO:
+      type: object
+      properties:
+        email:
+          type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

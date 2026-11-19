@@ -34,6 +34,7 @@ app:
     cron: "0 0 3 * * *"   # tous les jours à 3 h du matin
 
 springdoc:
+  default-produces-media-type: application/json
   api-docs:
     enabled: ${API_DOCS_ENABLED:false}
   swagger-ui:

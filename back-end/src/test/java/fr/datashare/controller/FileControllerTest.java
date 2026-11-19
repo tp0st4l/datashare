@@ -125,6 +125,21 @@ class FileControllerTest {
     }
 
     @Test
+    void upload_returns400WithoutFile() throws Exception {
+        mockMvc.perform(multipart("/api/files").header("Authorization", "Bearer " + token))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Aucun fichier reçu"));
+    }
+
+    @Test
+    void upload_returns400WhenExpirationIsNotANumber() throws Exception {
+        mockMvc.perform(multipart("/api/files").file(textFile("test.txt")).param("expirationDays", "abc")
+                .header("Authorization", "Bearer " + token))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.fieldErrors.expirationDays").exists());
+    }
+
+    @Test
     void upload_returns401WithoutToken() throws Exception {
         mockMvc.perform(multipart("/api/files").file(textFile("test.txt")))
                 .andExpect(status().isUnauthorized());
