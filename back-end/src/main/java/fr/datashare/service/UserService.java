@@ -3,6 +3,7 @@ package fr.datashare.service;
 import fr.datashare.entities.User;
 import fr.datashare.exception.EmailAlreadyUsedException;
 import fr.datashare.repository.UserRepository;
+import fr.datashare.validation.PasswordRules;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,10 @@ public class UserService {
     }
 
     public String login(String email, String password) {
+        // Un mot de passe trop long pour BCrypt ne peut correspondre à aucun compte
+        if (PasswordRules.exceedsBcryptLimit(password)) {
+            throw new BadCredentialsException("Email ou mot de passe incorrect");
+        }
         User user = userRepository.findByEmail(email)
                 .filter(u -> passwordEncoder.matches(password, u.getPassword()))
                 .orElseThrow(() -> new BadCredentialsException("Email ou mot de passe incorrect"));

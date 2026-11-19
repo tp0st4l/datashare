@@ -140,6 +140,14 @@ class FileControllerTest {
     }
 
     @Test
+    void upload_returns400WhenPasswordExceedsBcryptLimit() throws Exception {
+        mockMvc.perform(multipart("/api/files").file(textFile("test.txt")).param("password", "a".repeat(73))
+                .header("Authorization", "Bearer " + token))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value(containsString("trop long")));
+    }
+
+    @Test
     void upload_returns401WithoutToken() throws Exception {
         mockMvc.perform(multipart("/api/files").file(textFile("test.txt")))
                 .andExpect(status().isUnauthorized());
@@ -212,6 +220,11 @@ class FileControllerTest {
     @Test
     void ticket_returns403WithWrongPassword() throws Exception {
         requestTicket(upload(FILE_PASSWORD), "mauvais").andExpect(status().isForbidden());
+    }
+
+    @Test
+    void ticket_returns403WhenPasswordExceedsBcryptLimit() throws Exception {
+        requestTicket(upload(FILE_PASSWORD), "a".repeat(80)).andExpect(status().isForbidden());
     }
 
     @Test

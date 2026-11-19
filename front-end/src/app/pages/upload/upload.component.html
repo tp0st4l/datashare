@@ -52,6 +52,9 @@
             @if (submitted() && form.controls.password.errors?.['minlength']) {
             <p class="error-text" role="alert">Le mot de passe doit contenir au moins 6 caractères.</p>
             }
+            @if (submitted() && form.controls.password.errors?.['maxBytes']) {
+            <p class="error-text" role="alert">Le mot de passe est trop long : 72 caractères maximum (moins s'il contient des accents).</p>
+            }
         </div>
 
         <div class="field">

@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../core/service/auth.service';
 import { FileService } from '../../core/service/file.service';
 import { formatSize } from '../../shared/utils/format-size';
+import { maxBytes, PASSWORD_MAX_BYTES } from '../../shared/utils/max-bytes.validator';
 
 const MAX_FILE_SIZE = 1024 * 1024 * 1024;
 
@@ -55,7 +56,7 @@ export class UploadComponent {
     ];
 
     readonly form = this.fb.group({
-        password: ['', Validators.minLength(6)],
+        password: ['', [Validators.minLength(6), maxBytes(PASSWORD_MAX_BYTES)]],
         expirationDays: [7],
     });
 

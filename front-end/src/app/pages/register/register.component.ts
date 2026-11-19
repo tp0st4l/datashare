@@ -3,6 +3,7 @@ import { Component, inject, signal } from '@angular/core';
 import { AbstractControl, NonNullableFormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/service/auth.service';
+import { maxBytes, PASSWORD_MAX_BYTES } from '../../shared/utils/max-bytes.validator';
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -25,7 +26,7 @@ export class RegisterComponent {
     readonly form = this.fb.group(
         {
             email: ['', [Validators.required, Validators.email, Validators.pattern(EMAIL_PATTERN)]],
-            password: ['', [Validators.required, Validators.minLength(8)]],
+            password: ['', [Validators.required, Validators.minLength(8), maxBytes(PASSWORD_MAX_BYTES)]],
             confirmPassword: ['', Validators.required],
         },
         { validators: passwordsMatch },

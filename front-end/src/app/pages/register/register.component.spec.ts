@@ -70,4 +70,14 @@ describe('RegisterComponent', () => {
         expect(component.form.controls.email.errors?.['pattern']).toBeTruthy();
         expect(authServiceMock.register).not.toHaveBeenCalled();
     });
+
+    it('refuse un mot de passe de plus de 72 octets', () => {
+        const password = 'é'.repeat(40); // 40 caractères, 80 octets
+        component.form.setValue({ email: 'marie@datashare.fr', password, confirmPassword: password });
+
+        component.onSubmit();
+
+        expect(component.form.controls.password.errors?.['maxBytes']).toBeTruthy();
+        expect(authServiceMock.register).not.toHaveBeenCalled();
+    });
 });

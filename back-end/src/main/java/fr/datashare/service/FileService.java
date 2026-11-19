@@ -7,6 +7,7 @@ import fr.datashare.exception.FileExpiredException;
 import fr.datashare.exception.InvalidFileException;
 import fr.datashare.exception.ResourceNotFoundException;
 import fr.datashare.repository.StoredFileRepository;
+import fr.datashare.validation.PasswordRules;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -83,7 +84,8 @@ public class FileService {
     public StoredFile checkDownloadAccess(String token, String password) {
         StoredFile file = getDownloadable(token);
         if (file.isPasswordProtected()
-                && (password == null || !passwordEncoder.matches(password, file.getPasswordHash()))) {
+                && (password == null || PasswordRules.exceedsBcryptLimit(password)
+                        || !passwordEncoder.matches(password, file.getPasswordHash()))) {
             throw new FileAccessDeniedException();
         }
         return file;
@@ -106,6 +108,9 @@ public class FileService {
         }
         if (hasPassword(password) && password.length() < MIN_PASSWORD_LENGTH) {
             throw new InvalidFileException("Le mot de passe doit contenir au moins 6 caractères");
+        }
+        if (hasPassword(password) && PasswordRules.exceedsBcryptLimit(password)) {
+            throw new InvalidFileException(PasswordRules.TOO_LONG_MESSAGE);
         }
         if (expirationDays != null && (expirationDays < MIN_EXPIRATION_DAYS || expirationDays > MAX_EXPIRATION_DAYS)) {
             throw new InvalidFileException("La durée d'expiration doit être comprise entre 1 et 7 jours");

@@ -406,6 +406,7 @@ components:
           minLength: 1
         password:
           type: string
+          description: "8 caractères minimum, 72 octets maximum (limite de BCrypt)"
           maxLength: 2147483647
           minLength: 8
       required:

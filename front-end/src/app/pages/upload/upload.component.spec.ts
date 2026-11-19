@@ -90,6 +90,16 @@ describe('UploadComponent', () => {
         expect(fileServiceMock.upload).not.toHaveBeenCalled();
     });
 
+    it('refuse un mot de passe de plus de 72 octets', () => {
+        selectFile(textFile());
+        component.form.setValue({ password: 'a'.repeat(73), expirationDays: 7 });
+
+        component.onSubmit(document.createElement('input'));
+
+        expect(component.form.controls.password.errors?.['maxBytes']).toBeTruthy();
+        expect(fileServiceMock.upload).not.toHaveBeenCalled();
+    });
+
     it('téléverse, affiche le succès et réinitialise le formulaire', () => {
         fileServiceMock.upload.mockReturnValue(of({ token: 'abc' }));
         selectFile(textFile());

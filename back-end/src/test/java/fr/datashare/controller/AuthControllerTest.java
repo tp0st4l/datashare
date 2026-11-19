@@ -29,6 +29,8 @@ class AuthControllerTest {
 
     private static final String EMAIL = "test@datashare.fr";
     private static final String PASSWORD = "motdepasse";
+    private static final String TOO_LONG =
+            "Le mot de passe est trop long : 72 caractères maximum (moins s'il contient des accents)";
 
     @Autowired
     private WebApplicationContext context;
@@ -117,6 +119,24 @@ class AuthControllerTest {
                 .andExpect(jsonPath("$.fieldErrors").doesNotExist());
     }
 
+    @Test
+    void register_returns400WhenPasswordExceedsBcryptLimit() throws Exception {
+        register(EMAIL, "a".repeat(73))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.fieldErrors.password").value(TOO_LONG));
+    }
+
+    @Test
+    void register_countsBytesNotCharactersForPasswordLimit() throws Exception {
+        // 40 caractères, mais 80 octets en UTF-8
+        register(EMAIL, "é".repeat(40)).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void register_acceptsPasswordOfExactly72Bytes() throws Exception {
+        register(EMAIL, "a".repeat(72)).andExpect(status().isCreated());
+    }
+
     // ---------- Connexion ----------
 
     @Test
@@ -138,6 +158,13 @@ class AuthControllerTest {
     @Test
     void login_returns401WhenEmailIsUnknown() throws Exception {
         login("inconnu@datashare.fr", PASSWORD).andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void login_returns401WhenPasswordExceedsBcryptLimit() throws Exception {
+        register(EMAIL, PASSWORD);
+
+        login(EMAIL, "a".repeat(80)).andExpect(status().isUnauthorized());
     }
 
     // ---------- Route protégée ----------
