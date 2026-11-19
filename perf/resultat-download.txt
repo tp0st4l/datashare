@@ -3,13 +3,13 @@
   █ THRESHOLDS 
 
     http_req_duration{name:fichier}
-    ✓ 'p(95)<1000' p(95)=3.67ms
+    ✓ 'p(95)<1000' p(95)=3.93ms
 
     http_req_duration{name:infos}
-    ✓ 'p(95)<300' p(95)=2.61ms
+    ✓ 'p(95)<300' p(95)=2.76ms
 
     http_req_duration{name:ticket}
-    ✓ 'p(95)<300' p(95)=2.42ms
+    ✓ 'p(95)<300' p(95)=2.65ms
 
     http_req_failed
     ✓ 'rate<0.01' rate=0.00%
@@ -17,7 +17,7 @@
 
   █ TOTAL RESULTS 
 
-    checks_total.......: 4971    46.750942/s
+    checks_total.......: 4971    46.717079/s
     checks_succeeded...: 100.00% 4971 out of 4971
     checks_failed......: 0.00%   0 out of 4971
 
@@ -26,17 +26,17 @@
     ✓ fichier : 200
 
     HTTP
-    http_req_duration..............: avg=1.88ms min=732.07µs med=1.52ms max=393.17ms p(90)=2.57ms p(95)=3.05ms
-      { expected_response:true }...: avg=1.88ms min=732.07µs med=1.52ms max=393.17ms p(90)=2.57ms p(95)=3.05ms
-      { name:fichier }.............: avg=2.43ms min=1.78ms   med=2.22ms max=12.47ms  p(90)=3.06ms p(95)=3.67ms
-      { name:infos }...............: avg=1.59ms min=754.57µs med=1.4ms  max=11.56ms  p(90)=2.13ms p(95)=2.61ms
-      { name:ticket }..............: avg=1.26ms min=732.07µs med=1.04ms max=8.82ms   p(90)=1.9ms  p(95)=2.42ms
+    http_req_duration..............: avg=2.02ms min=817.28µs med=1.64ms max=403.62ms p(90)=2.79ms p(95)=3.32ms
+      { expected_response:true }...: avg=2.02ms min=817.28µs med=1.64ms max=403.62ms p(90)=2.79ms p(95)=3.32ms
+      { name:fichier }.............: avg=2.6ms  min=1.77ms   med=2.35ms max=14.03ms  p(90)=3.34ms p(95)=3.93ms
+      { name:infos }...............: avg=1.7ms  min=817.28µs med=1.52ms max=11.99ms  p(90)=2.25ms p(95)=2.76ms
+      { name:ticket }..............: avg=1.39ms min=856.93µs med=1.17ms max=8.66ms   p(90)=2.03ms p(95)=2.65ms
     http_req_failed................: 0.00%  0 out of 4974
-    http_reqs......................: 4974   46.779156/s
+    http_reqs......................: 4974   46.745273/s
 
     EXECUTION
-    iteration_duration.............: avg=1s     min=1s       med=1s     max=1.03s    p(90)=1s     p(95)=1s    
-    iterations.....................: 1657   15.583647/s
+    iteration_duration.............: avg=1s     min=1s       med=1s     max=1.03s    p(90)=1s     p(95)=1.01s 
+    iterations.....................: 1657   15.57236/s
     vus............................: 1      min=1         max=20
     vus_max........................: 20     min=20        max=20
 

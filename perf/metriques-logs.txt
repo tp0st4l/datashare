@@ -1,0 +1,6 @@
+GET /api/download/{token} 200                   1657 requêtes, moyenne 1,0 ms, max 11 ms
+GET /api/download/{token}/file 200              1657 requêtes, moyenne 2,2 ms, max 14 ms
+POST /api/auth/login 200                           1 requêtes, moyenne 136,0 ms, max 136 ms
+POST /api/auth/register 201                        1 requêtes, moyenne 372,0 ms, max 372 ms
+POST /api/download/{token}/ticket 200           1657 requêtes, moyenne 0,5 ms, max 7 ms
+POST /api/files 201                                1 requêtes, moyenne 71,0 ms, max 71 ms

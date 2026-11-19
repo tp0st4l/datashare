@@ -1,0 +1,15 @@
+2026-11-19T16:09:00.982+01:00  INFO 500008 --- [datashare-backend] [nio-8080-exec-1] f.d.configuration.RequestMetricsFilter   : POST /api/auth/register 201 372 ms
+2026-11-19T16:09:01.121+01:00  INFO 500008 --- [datashare-backend] [nio-8080-exec-2] f.d.configuration.RequestMetricsFilter   : POST /api/auth/login 200 136 ms
+2026-11-19T16:09:01.192+01:00  INFO 500008 --- [datashare-backend] [nio-8080-exec-3] fr.datashare.service.FileService         : Dépôt du fichier 5 : 1048576 octets, expiration dans 1 jour(s)
+2026-11-19T16:09:01.199+01:00  INFO 500008 --- [datashare-backend] [nio-8080-exec-3] f.d.configuration.RequestMetricsFilter   : POST /api/files 201 71 ms
+2026-11-19T16:09:01.211+01:00  INFO 500008 --- [datashare-backend] [nio-8080-exec-4] f.d.configuration.RequestMetricsFilter   : GET /api/download/{token} 200 11 ms
+2026-11-19T16:09:01.220+01:00  INFO 500008 --- [datashare-backend] [nio-8080-exec-5] f.d.configuration.RequestMetricsFilter   : POST /api/download/{token}/ticket 200 7 ms
+2026-11-19T16:09:01.225+01:00  INFO 500008 --- [datashare-backend] [nio-8080-exec-6] f.d.controller.DownloadController        : Téléchargement du fichier 5 : 1048576 octets
+2026-11-19T16:09:01.235+01:00  INFO 500008 --- [datashare-backend] [nio-8080-exec-6] f.d.configuration.RequestMetricsFilter   : GET /api/download/{token}/file 200 14 ms
+2026-11-19T16:09:02.240+01:00  INFO 500008 --- [datashare-backend] [nio-8080-exec-7] f.d.configuration.RequestMetricsFilter   : GET /api/download/{token} 200 3 ms
+2026-11-19T16:09:02.245+01:00  INFO 500008 --- [datashare-backend] [nio-8080-exec-8] f.d.configuration.RequestMetricsFilter   : POST /api/download/{token}/ticket 200 3 ms
+2026-11-19T16:09:02.250+01:00  INFO 500008 --- [datashare-backend] [nio-8080-exec-9] f.d.controller.DownloadController        : Téléchargement du fichier 5 : 1048576 octets
+2026-11-19T16:09:02.253+01:00  INFO 500008 --- [datashare-backend] [nio-8080-exec-9] f.d.configuration.RequestMetricsFilter   : GET /api/download/{token}/file 200 7 ms
+2026-11-19T16:09:02.783+01:00  INFO 500008 --- [datashare-backend] [io-8080-exec-10] f.d.configuration.RequestMetricsFilter   : GET /api/download/{token} 200 3 ms
+2026-11-19T16:09:02.787+01:00  INFO 500008 --- [datashare-backend] [nio-8080-exec-1] f.d.configuration.RequestMetricsFilter   : POST /api/download/{token}/ticket 200 3 ms
+2026-11-19T16:09:02.791+01:00  INFO 500008 --- [datashare-backend] [nio-8080-exec-2] f.d.controller.DownloadController        : Téléchargement du fichier 5 : 1048576 octets
