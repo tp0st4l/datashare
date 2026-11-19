@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, signal } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
@@ -36,9 +37,11 @@ export class LoginComponent {
                 this.isLoading.set(false);
                 this.router.navigate(['/']);
             },
-            error: () => {
+            error: (error: HttpErrorResponse) => {
                 this.isLoading.set(false);
-                this.errorMessage.set('Email ou mot de passe incorrect');
+                this.errorMessage.set(
+                    error.status === 401 ? 'Email ou mot de passe incorrect' : 'Une erreur est survenue, réessayez plus tard.',
+                );
             },
         });
     }

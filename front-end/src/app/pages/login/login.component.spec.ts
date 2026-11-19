@@ -49,4 +49,14 @@ describe('LoginComponent', () => {
         expect(component.errorMessage()).toBe('Email ou mot de passe incorrect');
         expect(router.navigate).not.toHaveBeenCalled();
     });
+
+    it("affiche un message générique si le serveur est indisponible", () => {
+        authServiceMock.login.mockReturnValue(throwError(() => new HttpErrorResponse({ status: 0 })));
+        component.form.setValue({ email: 'test@datashare.fr', password: 'motdepasse' });
+
+        component.onSubmit();
+
+        expect(component.errorMessage()).toBe('Une erreur est survenue, réessayez plus tard.');
+        expect(component.isLoading()).toBe(false);
+    });
 });
