@@ -7,11 +7,11 @@ import lombok.Data;
 
 @Data
 public class RegisterRequestDTO {
-    @NotBlank
-    @Email(regexp = "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$")
+    @NotBlank(message = "L'email est obligatoire")
+    @Email(regexp = "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$", message = "Le format de l'email est invalide")
     private String email;
 
-    @NotBlank
-    @Size(min = 8)
+    @NotBlank(message = "Le mot de passe est obligatoire")
+    @Size(min = 8, message = "Le mot de passe doit contenir au moins 8 caractères")
     private String password;
 }

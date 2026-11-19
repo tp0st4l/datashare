@@ -232,6 +232,16 @@ class FileControllerTest {
     }
 
     @Test
+    void download_returns400InErrorDetailsFormatWhenTicketIsMissing() throws Exception {
+        String fileToken = upload(null);
+
+        mockMvc.perform(get("/api/download/" + fileToken + "/file"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Requête invalide : paramètre manquant ou mal formé"))
+                .andExpect(jsonPath("$.details").value(containsString("/file")));
+    }
+
+    @Test
     void download_returns404ForUnknownLink() throws Exception {
         mockMvc.perform(get("/api/download/lieninexistant"))
                 .andExpect(status().isNotFound());

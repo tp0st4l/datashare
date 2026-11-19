@@ -96,6 +96,26 @@ class AuthControllerTest {
         register("marie@edr", PASSWORD).andExpect(status().isBadRequest());
     }
 
+    @Test
+    void register_returns400WithMessageForEachInvalidField() throws Exception {
+        register("pasunemail", "court")
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Données invalides"))
+                .andExpect(jsonPath("$.fieldErrors.email").value("Le format de l'email est invalide"))
+                .andExpect(jsonPath("$.fieldErrors.password").value("Le mot de passe doit contenir au moins 8 caractères"));
+    }
+
+    @Test
+    void register_returns400InErrorDetailsFormatForMalformedJson() throws Exception {
+        mockMvc.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{pas du json"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Requête invalide : paramètre manquant ou mal formé"))
+                .andExpect(jsonPath("$.details").value("uri=/api/auth/register"))
+                .andExpect(jsonPath("$.fieldErrors").doesNotExist());
+    }
+
     // ---------- Connexion ----------
 
     @Test
