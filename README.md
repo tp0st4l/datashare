@@ -78,7 +78,7 @@ docker run -d --rm --name datashare-front -p 8081:80 \
   --add-host=host.docker.internal:host-gateway \
   -v "$PWD/dist/front-end/browser:/usr/share/nginx/html:ro" \
   -v "$PWD/nginx.conf:/etc/nginx/conf.d/default.conf:ro" \
-  nginx:1.29-alpine
+  nginx:1.30-alpine
 ```
 
 Ouvrir **http://localhost:8081**. Pour arrêter : `docker stop datashare-front`.

@@ -13,4 +13,5 @@ COPY my-files.mjs /opt/lh/
 
 ENV CHROME_PATH=/usr/bin/chromium
 WORKDIR /audits
+USER node
 ENTRYPOINT ["lighthouse"]
