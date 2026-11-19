@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.nio.charset.StandardCharsets;
 
+@Slf4j
 @RestController
 @Tag(name = "Téléchargement", description = "Accès public à un fichier partagé, à partir du token de son lien")
 @ApiResponse(responseCode = "404", description = "Lien inconnu",
@@ -78,6 +80,7 @@ public class DownloadController {
                     "Lien de téléchargement invalide ou expiré, recommencez depuis la page du fichier");
         }
         StoredFile file = fileService.getDownloadable(token);
+        log.info("Téléchargement du fichier {} : {} octets", file.getId(), file.getSize());
         ContentDisposition disposition = ContentDisposition.attachment()
                 .filename(file.getOriginalName(), StandardCharsets.UTF_8)
                 .build();

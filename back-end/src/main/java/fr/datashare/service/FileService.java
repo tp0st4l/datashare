@@ -9,6 +9,7 @@ import fr.datashare.exception.ResourceNotFoundException;
 import fr.datashare.repository.StoredFileRepository;
 import fr.datashare.validation.PasswordRules;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +22,7 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.List;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -52,7 +54,9 @@ public class FileService {
         storedFile.setOwner(owner);
         storedFile.setStorageName(storageService.store(file));
 
-        return storedFileRepository.save(storedFile);
+        StoredFile saved = storedFileRepository.save(storedFile);
+        log.info("Dépôt du fichier {} : {} octets, expiration dans {} jour(s)", saved.getId(), saved.getSize(), days);
+        return saved;
     }
 
     @Transactional(readOnly = true)
