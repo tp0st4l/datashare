@@ -10,7 +10,12 @@ COPY . .
 RUN npx ng build
 
 # ---------- Étape 2 : service par nginx, sans privilèges root ----------
-FROM nginxinc/nginx-unprivileged:1.30-alpine
+FROM nginx:1.30-alpine
+# Exécution sans root : pas de directive user, fichier PID dans /tmp, cache appartenant à nginx
+RUN sed -i '/^user /d' /etc/nginx/nginx.conf \
+ && sed -i 's#^pid .*#pid /tmp/nginx.pid;#' /etc/nginx/nginx.conf \
+ && chown -R nginx:nginx /var/cache/nginx
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /build/dist/front-end/browser /usr/share/nginx/html
+USER nginx
 EXPOSE 8080

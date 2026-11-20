@@ -1,0 +1,86 @@
+
+Report Summary
+
+┌────────────────────────────────┬────────┬─────────────────┬─────────┐
+│             Target             │  Type  │ Vulnerabilities │ Secrets │
+├────────────────────────────────┼────────┼─────────────────┼─────────┤
+│ datashare-back (alpine 3.24.4) │ alpine │       16        │    -    │
+├────────────────────────────────┼────────┼─────────────────┼─────────┤
+│ app/app.jar                    │  jar   │        0        │    -    │
+└────────────────────────────────┴────────┴─────────────────┴─────────┘
+Legend:
+- '-': Not scanned
+- '0': Clean (no security findings detected)
+
+
+datashare-back (alpine 3.24.4)
+==============================
+Total: 16 (UNKNOWN: 0, LOW: 0, MEDIUM: 16, HIGH: 0, CRITICAL: 0)
+
+┌────────────┬─────────────────┬──────────┬────────┬───────────────────┬───────────────┬──────────────────────────────────────────────────────────────┐
+│  Library   │  Vulnerability  │ Severity │ Status │ Installed Version │ Fixed Version │                            Title                             │
+├────────────┼─────────────────┼──────────┼────────┼───────────────────┼───────────────┼──────────────────────────────────────────────────────────────┤
+│ libcrypto3 │ CVE-2026-107496 │ MEDIUM   │ fixed  │ 3.5.9-r0          │ 3.5.9-r1      │ Issue summary: Encrypting a CMS message to an EC certificate │
+│            │                 │          │        │                   │               │ whose gro...                                                 │
+│            │                 │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2026-107496                  │
+│            ├─────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│            │ CVE-2026-88822  │          │        │                   │               │ Issue summary: QUIC, when performing automated peer          │
+│            │                 │          │        │                   │               │ detection, may all ...                                       │
+│            │                 │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2026-88822                   │
+│            ├─────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│            │ CVE-2026-88823  │          │        │                   │               │ Issue summary: The AES-GCM-SIV implementation treats a       │
+│            │                 │          │        │                   │               │ zero-length Add ...                                          │
+│            │                 │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2026-88823                   │
+│            ├─────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│            │ CVE-2026-95691  │          │        │                   │               │ Issue summary: A retransmitted QUIC CRYPTO frame can release │
+│            │                 │          │        │                   │               │ packet st ......                                             │
+│            │                 │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2026-95691                   │
+│            ├─────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│            │ CVE-2026-95692  │          │        │                   │               │ Issue summary: Setting an AES-GCM-SIV IV shorter than the    │
+│            │                 │          │        │                   │               │ expected non ......                                          │
+│            │                 │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2026-95692                   │
+├────────────┼─────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│ libssl3    │ CVE-2026-107496 │          │        │                   │               │ Issue summary: Encrypting a CMS message to an EC certificate │
+│            │                 │          │        │                   │               │ whose gro...                                                 │
+│            │                 │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2026-107496                  │
+│            ├─────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│            │ CVE-2026-88822  │          │        │                   │               │ Issue summary: QUIC, when performing automated peer          │
+│            │                 │          │        │                   │               │ detection, may all ...                                       │
+│            │                 │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2026-88822                   │
+│            ├─────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│            │ CVE-2026-88823  │          │        │                   │               │ Issue summary: The AES-GCM-SIV implementation treats a       │
+│            │                 │          │        │                   │               │ zero-length Add ...                                          │
+│            │                 │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2026-88823                   │
+│            ├─────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│            │ CVE-2026-95691  │          │        │                   │               │ Issue summary: A retransmitted QUIC CRYPTO frame can release │
+│            │                 │          │        │                   │               │ packet st ......                                             │
+│            │                 │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2026-95691                   │
+│            ├─────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│            │ CVE-2026-95692  │          │        │                   │               │ Issue summary: Setting an AES-GCM-SIV IV shorter than the    │
+│            │                 │          │        │                   │               │ expected non ......                                          │
+│            │                 │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2026-95692                   │
+├────────────┼─────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│ openssl    │ CVE-2026-107496 │          │        │                   │               │ Issue summary: Encrypting a CMS message to an EC certificate │
+│            │                 │          │        │                   │               │ whose gro...                                                 │
+│            │                 │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2026-107496                  │
+│            ├─────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│            │ CVE-2026-88822  │          │        │                   │               │ Issue summary: QUIC, when performing automated peer          │
+│            │                 │          │        │                   │               │ detection, may all ...                                       │
+│            │                 │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2026-88822                   │
+│            ├─────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│            │ CVE-2026-88823  │          │        │                   │               │ Issue summary: The AES-GCM-SIV implementation treats a       │
+│            │                 │          │        │                   │               │ zero-length Add ...                                          │
+│            │                 │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2026-88823                   │
+│            ├─────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│            │ CVE-2026-95691  │          │        │                   │               │ Issue summary: A retransmitted QUIC CRYPTO frame can release │
+│            │                 │          │        │                   │               │ packet st ......                                             │
+│            │                 │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2026-95691                   │
+│            ├─────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│            │ CVE-2026-95692  │          │        │                   │               │ Issue summary: Setting an AES-GCM-SIV IV shorter than the    │
+│            │                 │          │        │                   │               │ expected non ......                                          │
+│            │                 │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2026-95692                   │
+├────────────┼─────────────────┤          │        ├───────────────────┼───────────────┼──────────────────────────────────────────────────────────────┤
+│ zlib       │ CVE-2026-4738   │          │        │ 1.3.2-r1          │ 1.4-r0        │ Improper Restriction of Operations within the Bounds of a    │
+│            │                 │          │        │                   │               │ Memory Buffe ......                                          │
+│            │                 │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2026-4738                    │
+└────────────┴─────────────────┴──────────┴────────┴───────────────────┴───────────────┴──────────────────────────────────────────────────────────────┘
