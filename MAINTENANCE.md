@@ -14,7 +14,8 @@ Ce document décrit comment maintenir DataShare à jour : quelles dépendances s
 | Angular                                      | 22                                                           | `front-end/package.json`                                   | 18 mois par version majeure       |
 | Outils de test front                         | Vitest 5, Cypress 16                                         | `front-end/package.json`                                   | —                                 |
 | PostgreSQL                                   | 18 (`postgres:18-alpine`)                                    | `docker-compose.yml` et `TestcontainersConfiguration.java` | Novembre 2030                     |
-| nginx                                        | 1.30, branche stable (`nginx:1.30-alpine`)                   | `README.md` (déploiement du front)                         | Environ un an par branche         |
+| nginx                                        | 1.30, branche stable (`nginx-unprivileged:1.30-alpine`)      | `front-end/Dockerfile`                                     | Environ un an par branche         |
+| Images de construction et d'exécution        | `eclipse-temurin:25` (JDK, JRE), `node:24-alpine`            | `back-end/Dockerfile`, `front-end/Dockerfile`              | Celles de Java 25 et de Node 24   |
 | Outils de mesure                             | Trivy 0.76.2, k6 2.4.0, Lighthouse 13.5.0, Node 24           | `MAINTENANCE.md`, `PERF.md`, `perf/lighthouse/Dockerfile`  | —                                 |
 
 Les versions npm sont figées par `package-lock.json`, et `npm ci` installe exactement ces versions : deux installations du projet sont identiques.
@@ -64,8 +65,9 @@ npm update                                    # versions mineures et correctives
 ### Images Docker
 
 ```bash
-docker pull postgres:18-alpine nginx:1.30-alpine
-docker compose up -d                          # recrée le conteneur si l'image a changé (les données sont conservées)
+docker compose pull db                                  # nouvelle version de l'image PostgreSQL
+docker compose --profile prod build --pull              # reconstruit back et front sur des images de base à jour
+docker compose --profile prod up -d                     # recrée les conteneurs modifiés (les données sont conservées)
 ```
 
 - Le tag désigne une **branche** (`18`, `1.30`) : un `docker pull` apporte ses correctifs, sans changement de version majeure.
@@ -104,7 +106,13 @@ $TRIVY fs --scanners vuln,secret,misconfig \
   --output /out/trivy-sources.txt /src
 $TRIVY rootfs --scanners vuln --output /out/trivy-back-end-jar.txt /src/back-end/target
 $TRIVY image --output /out/trivy-postgres-alpine.txt postgres:18-alpine
-$TRIVY image --output /out/trivy-nginx.txt nginx:1.30-alpine
+
+# Images construites par le Compose (docker compose --profile prod build) : Trivy les lit via le démon Docker
+TRIVY_IMG="docker run --rm --user $(id -u):$(id -g) --group-add $(stat -c %g /var/run/docker.sock) \
+  -e TRIVY_CACHE_DIR=/cache -v $HOME/.cache/trivy:/cache \
+  -v /var/run/docker.sock:/var/run/docker.sock -v $PWD/docs/security:/out aquasec/trivy:0.76.2"
+$TRIVY_IMG image --output /out/trivy-back-image.txt datashare-back
+$TRIVY_IMG image --output /out/trivy-front-image.txt datashare-front
 
 (cd front-end && npm audit --omit=dev && npm audit)
 ```

@@ -1,3 +1,6 @@
+# Développement : docker compose up -d                      (base de données seule)
+# Production    : docker compose --profile prod up -d --build  (toute l'application)
+
 services:
   db:
     image: postgres:18-alpine
@@ -23,5 +26,37 @@ services:
       start_period: 30s
       start_interval: 1s
 
+  back:
+    profiles: [prod]
+    build: ./back-end
+    image: datashare-back
+    restart: unless-stopped
+    # Uniquement les variables utiles au back-end : jamais le compte administrateur de la base
+    environment:
+      DB_HOST: db
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      API_DOCS_ENABLED: "false"
+    volumes:
+      - uploads:/app/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+    # Pas de port publié : le back-end n'est joignable que par nginx
+
+  front:
+    profiles: [prod]
+    build: ./front-end
+    image: datashare-front
+    restart: unless-stopped
+    ports:
+      - "${FRONT_PORT:-8081}:8080"
+    depends_on:
+      back:
+        condition: service_healthy
+
 volumes:
   db-data:
+  uploads:
